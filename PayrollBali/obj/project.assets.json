@@ -1943,11 +1943,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\csangjaya\\Documents\\Kantor\\PayrollBali\\PayrollBali\\PayrollBali.vbproj",
+      "projectUniqueName": "C:\\Users\\csangjaya\\Documents\\Kantor\\New folder (2)\\payrollbali\\PayrollBali\\PayrollBali.vbproj",
       "projectName": "PayrollBali",
-      "projectPath": "C:\\Users\\csangjaya\\Documents\\Kantor\\PayrollBali\\PayrollBali\\PayrollBali.vbproj",
+      "projectPath": "C:\\Users\\csangjaya\\Documents\\Kantor\\New folder (2)\\payrollbali\\PayrollBali\\PayrollBali.vbproj",
       "packagesPath": "C:\\Users\\csangjaya\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\csangjaya\\Documents\\Kantor\\PayrollBali\\PayrollBali\\obj\\",
+      "outputPath": "C:\\Users\\csangjaya\\Documents\\Kantor\\New folder (2)\\payrollbali\\PayrollBali\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\csangjaya\\AppData\\Roaming\\NuGet\\NuGet.Config",

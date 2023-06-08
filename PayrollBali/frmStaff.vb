@@ -97,12 +97,41 @@ Public Class frmStaff
                 txtCardId.Enabled = True
                 txtEmpRecordId.Enabled = True
 
-                idStaff = dgStaff.Rows(e.RowIndex).Cells("id").Value
-                fullname = dgStaff.Rows(e.RowIndex).Cells("fullName").Value
-                firstname = dgStaff.Rows(e.RowIndex).Cells("firstName").Value
-                lastname = dgStaff.Rows(e.RowIndex).Cells("lastName").Value
-                cardid = dgStaff.Rows(e.RowIndex).Cells("cardId").Value
-                emprecordid = dgStaff.Rows(e.RowIndex).Cells("empRecordId").Value
+                If (String.IsNullOrWhiteSpace(dgStaff.Rows(e.RowIndex).Cells("id").Value.ToString())) Then
+                    idStaff = ""
+                Else
+                    idStaff = dgStaff.Rows(e.RowIndex).Cells("id").Value
+                End If
+
+                If (String.IsNullOrWhiteSpace(dgStaff.Rows(e.RowIndex).Cells("fullName").Value.ToString())) Then
+                    fullname = ""
+                Else
+                    fullname = dgStaff.Rows(e.RowIndex).Cells("fullName").Value
+                End If
+
+                If (String.IsNullOrWhiteSpace(dgStaff.Rows(e.RowIndex).Cells("firstName").Value.ToString())) Then
+                    firstname = ""
+                Else
+                    firstname = dgStaff.Rows(e.RowIndex).Cells("firstName").Value
+                End If
+
+                If (String.IsNullOrWhiteSpace(dgStaff.Rows(e.RowIndex).Cells("lastName").Value.ToString())) Then
+                    lastname = ""
+                Else
+                    lastname = dgStaff.Rows(e.RowIndex).Cells("lastName").Value
+                End If
+
+                If (String.IsNullOrWhiteSpace(dgStaff.Rows(e.RowIndex).Cells("cardId").Value.ToString())) Then
+                    cardid = ""
+                Else
+                    cardid = dgStaff.Rows(e.RowIndex).Cells("cardId").Value
+                End If
+
+                If (String.IsNullOrWhiteSpace(dgStaff.Rows(e.RowIndex).Cells("empRecordId").Value.ToString())) Then
+                    emprecordid = ""
+                Else
+                    emprecordid = dgStaff.Rows(e.RowIndex).Cells("empRecordId").Value
+                End If
 
                 txtFullName.Text = fullname
                 txtFirstName.Text = firstname
