@@ -1,0 +1,16 @@
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\bin\Debug\net6.0\DllPayrollBali.deps.json
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\bin\Debug\net6.0\DllPayrollBali.dll
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\bin\Debug\net6.0\DllPayrollBali.pdb
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\bin\Debug\net6.0\DllConnection.dll
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\bin\Debug\net6.0\DllLogger.dll
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\bin\Debug\net6.0\DllEncap.dll
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\obj\Debug\net6.0\DllPayrollBali.vbproj.AssemblyReference.cache
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\obj\Debug\net6.0\DllPayrollBali.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\obj\Debug\net6.0\DllPayrollBali.AssemblyInfoInputs.cache
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\obj\Debug\net6.0\DllPayrollBali.AssemblyInfo.vb
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\obj\Debug\net6.0\DllPayrollBali.vbproj.CoreCompileInputs.cache
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\obj\Debug\net6.0\DllPayrollBali.vbproj.CopyComplete
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\obj\Debug\net6.0\DllPayrollBali.dll
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\obj\Debug\net6.0\refint\DllPayrollBali.dll
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\obj\Debug\net6.0\DllPayrollBali.pdb
+C:\Users\csangjaya\Documents\Kantor\PayrollBali\Dll\DllPayrollBali\obj\Debug\net6.0\ref\DllPayrollBali.dll

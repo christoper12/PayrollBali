@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>DllPayrollBali</RootNamespace>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.33" />
+    <PackageReference Include="System.Data.OleDb" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DllConnection">
+      <HintPath>G:\Industrial_Trackit Index Testing\TrackitDll\DllConnection.dll</HintPath>
+    </Reference>
+    <Reference Include="DllLogger">
+      <HintPath>G:\Industrial_Trackit Index Testing\TrackitDll\DllLogger.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
