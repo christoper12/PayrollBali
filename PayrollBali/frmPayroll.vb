@@ -1,11 +1,12 @@
 ﻿Imports System.Drawing.Drawing2D
 Imports System.IO
+Imports System.Data
 Imports Microsoft.Office.Interop
 Imports tesExcel = Microsoft.Office.Interop.Excel
 Imports Org.BouncyCastle.Asn1.X509
 Imports System.Globalization
 Imports Org.BouncyCastle.Utilities
-
+Imports Mysqlx.XDevAPI.Relational
 
 Public Class frmPayroll
     Private logger As New DllLogger.ClassLogger
@@ -13,6 +14,7 @@ Public Class frmPayroll
     Dim copyOriginalFileTarget As String = String.Empty
     Dim originalFile As String = String.Empty
     Dim dt, dt2 As New DataTable
+    Dim dtTimeSheet, dtGetStaffID As New DataTable
     Dim startDate As DateTime = Nothing
     Dim endDate As DateTime = Nothing
     Dim startDateFixed As String = String.Empty
@@ -29,11 +31,50 @@ Public Class frmPayroll
             startDateFixed = startDate.ToString("yyyy-MM-dd HH:mm:ss")
             endDateFixed = endDate.ToString("yyyy-MM-dd HH:mm:ss")
 
-
-            '            DateTime Date = DateTime.ParseExact(Text, "dd/MM/yyyy", CultureInfo.InvariantCulture)
+            'DateTime Date = DateTime.ParseExact(Text, "dd/MM/yyyy", CultureInfo.InvariantCulture)
             'String reformatted = Date.ToString("yyyyMMdd", CultureInfo.InvariantCulture)
 
+            Dim func As New DllPayrollBali.classPayrollBali
 
+            '----- Untuk Ambil Data Time Sheet Dari Tabel timesheetbali -----
+            If dt Is Nothing Then
+                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+            Else
+                dt = Nothing
+
+                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+            End If
+
+            dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+
+            If dgTimeSheet.Rows.Count >= 0 Then
+                dgTimeSheet.DataSource = Nothing
+            End If
+
+            dgTimeSheet.DataSource = dt
+            lblCount.Text = dgTimeSheet.Rows.Count
+            prepareDatagridTimeSheet()
+            '----- Untuk Ambil Data Time Sheet Dari Tabel timesheetbali -----
+
+            '----- Untuk Ambil Data Summary Dari Tabel timesheetbali dan di jumlahkan sesuai dengan tanggal yang di cari -----
+            If dt2 Is Nothing Then
+                dt2 = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+            Else
+                dt2 = Nothing
+
+                dt2 = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+            End If
+
+            dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed)
+
+            If dgSummary.Rows.Count >= 0 Then
+                dgSummary.DataSource = Nothing
+            End If
+
+            dgSummary.DataSource = dt2
+            lblCountSum.Text = dgSummary.Rows.Count
+            prepareDatagridSummary()
+            '----- Untuk Ambil Data Summary Dari Tabel timesheetbali dan di jumlahkan sesuai dengan tanggal yang di cari -----
 
             lblFileExcelImport.Text = "-"
             lblproses.Visible = False
@@ -49,6 +90,13 @@ Public Class frmPayroll
     Sub prepareDatagridTimeSheet()
         Try
             dgTimeSheet.ClearSelection()
+
+            ' Make a color style the header.
+            dgTimeSheet.EnableHeadersVisualStyles = False
+            Dim header_style As New DataGridViewCellStyle
+            header_style.BackColor = Color.LightCyan
+            ' Make a color style the header.
+
             dgTimeSheet.Columns("id").Visible = False
 
             dgTimeSheet.Columns("idImport").Visible = False
@@ -82,25 +130,110 @@ Public Class frmPayroll
             dgTimeSheet.Columns("actualHours").Frozen = True
 
             dgTimeSheet.Columns("toBePaidHours").HeaderCell.Value = "To Be Paid Hours"
+            dgTimeSheet.Columns("toBePaidHours").ReadOnly = True
+            dgTimeSheet.Columns("toBePaidHours").Frozen = True
 
             dgTimeSheet.Columns("baliBaseHourly").HeaderCell.Value = "01 Bali Base Hourly"
+            dgTimeSheet.Columns("baliBaseHourly").HeaderCell.Style = header_style
+            dgTimeSheet.Columns("baliBaseHourly").DefaultCellStyle.BackColor = Color.LightYellow
 
             dgTimeSheet.Columns("baliOvertime").HeaderCell.Value = "01 Bali Overtime (Flat Rate)"
+            dgTimeSheet.Columns("baliOvertime").HeaderCell.Style = header_style
+            dgTimeSheet.Columns("baliOvertime").DefaultCellStyle.BackColor = Color.LightYellow
 
             dgTimeSheet.Columns("baliHolidayPay").HeaderCell.Value = "01 Bali Holiday Pay"
+            dgTimeSheet.Columns("baliHolidayPay").HeaderCell.Style = header_style
+            dgTimeSheet.Columns("baliHolidayPay").DefaultCellStyle.BackColor = Color.LightYellow
 
             dgTimeSheet.Columns("baliSickPay").HeaderCell.Value = "01 Bali Sick Pay"
+            dgTimeSheet.Columns("baliSickPay").HeaderCell.Style = header_style
+            dgTimeSheet.Columns("baliSickPay").DefaultCellStyle.BackColor = Color.LightYellow
 
             dgTimeSheet.Columns("baliFlexiTimeEarned").HeaderCell.Value = "01 Bali Flexi Time - Earned"
+            dgTimeSheet.Columns("baliFlexiTimeEarned").HeaderCell.Style = header_style
+            dgTimeSheet.Columns("baliFlexiTimeEarned").DefaultCellStyle.BackColor = Color.LightYellow
 
             dgTimeSheet.Columns("baliFlexiTimeTaken").HeaderCell.Value = "01 Bali Flext Time - Taken"
+            dgTimeSheet.Columns("baliFlexiTimeTaken").HeaderCell.Style = header_style
+            dgTimeSheet.Columns("baliFlexiTimeTaken").DefaultCellStyle.BackColor = Color.LightYellow
 
             dgTimeSheet.Columns("baliOvertime15x").HeaderCell.Value = "01 Bali Overtime (1.5x)"
+            dgTimeSheet.Columns("baliOvertime15x").HeaderCell.Style = header_style
+            dgTimeSheet.Columns("baliOvertime15x").DefaultCellStyle.BackColor = Color.LightYellow
 
             dgTimeSheet.Columns("created_at").Visible = False
             dgTimeSheet.Columns("staff_add").Visible = False
             dgTimeSheet.Columns("update_at").Visible = False
             dgTimeSheet.Columns("staff_update").Visible = False
+            dgTimeSheet.Columns("cardId").Visible = False
+
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Sub prepareDatagridSummary()
+        Try
+            dgSummary.ClearSelection()
+
+            ' Make a color style the header.
+            dgSummary.EnableHeadersVisualStyles = False
+            Dim header_styledgSummary As New DataGridViewCellStyle
+            header_styledgSummary.BackColor = Color.LightCyan
+            ' Make a color style the header.
+
+            dgSummary.Columns("firstName").HeaderCell.Value = "First Name"
+            dgSummary.Columns("firstName").ReadOnly = True
+            dgSummary.Columns("firstName").Frozen = True
+
+            dgSummary.Columns("lastName").HeaderCell.Value = "Last Name"
+            dgSummary.Columns("lastName").ReadOnly = True
+            dgSummary.Columns("lastName").Frozen = True
+
+            dgSummary.Columns("actualHours").HeaderCell.Value = "Actual Hours"
+            dgSummary.Columns("actualHours").HeaderCell.Style = header_styledgSummary
+            dgSummary.Columns("actualHours").DefaultCellStyle.BackColor = Color.LightYellow
+            dgSummary.Columns("actualHours").ReadOnly = True
+
+            dgSummary.Columns("toBePaidHours").HeaderCell.Value = "To Be Paid Hours"
+            dgSummary.Columns("toBePaidHours").HeaderCell.Style = header_styledgSummary
+            dgSummary.Columns("toBePaidHours").DefaultCellStyle.BackColor = Color.LightYellow
+            dgSummary.Columns("toBePaidHours").ReadOnly = True
+
+            dgSummary.Columns("baliBaseHourly").HeaderCell.Value = "01 Bali Base Hourly"
+            dgSummary.Columns("baliBaseHourly").HeaderCell.Style = header_styledgSummary
+            dgSummary.Columns("baliBaseHourly").DefaultCellStyle.BackColor = Color.LightYellow
+            dgSummary.Columns("baliBaseHourly").ReadOnly = True
+
+            dgSummary.Columns("baliOvertime").HeaderCell.Value = "01 Bali Overtime (Flat Rate)"
+            dgSummary.Columns("baliOvertime").DefaultCellStyle.BackColor = Color.LightYellow
+            dgSummary.Columns("baliOvertime").ReadOnly = True
+            dgSummary.Columns("baliOvertime").HeaderCell.Style = header_styledgSummary
+
+            dgSummary.Columns("baliHolidayPay").HeaderCell.Value = "01 Bali Holiday Pay"
+            dgSummary.Columns("baliHolidayPay").HeaderCell.Style = header_styledgSummary
+            dgSummary.Columns("baliHolidayPay").DefaultCellStyle.BackColor = Color.LightYellow
+            dgSummary.Columns("baliHolidayPay").ReadOnly = True
+
+            dgSummary.Columns("baliSickPay").HeaderCell.Value = "01 Bali Sick Pay"
+            dgSummary.Columns("baliSickPay").HeaderCell.Style = header_styledgSummary
+            dgSummary.Columns("baliSickPay").DefaultCellStyle.BackColor = Color.LightYellow
+            dgSummary.Columns("baliSickPay").ReadOnly = True
+
+            dgSummary.Columns("baliFlexiTimeEarned").HeaderCell.Value = "01 Bali Flexi Time - Earned"
+            dgSummary.Columns("baliFlexiTimeEarned").HeaderCell.Style = header_styledgSummary
+            dgSummary.Columns("baliFlexiTimeEarned").DefaultCellStyle.BackColor = Color.LightYellow
+            dgSummary.Columns("baliFlexiTimeEarned").ReadOnly = True
+
+            dgSummary.Columns("baliFlexiTimeTaken").HeaderCell.Value = "01 Bali Flext Time - Taken"
+            dgSummary.Columns("baliFlexiTimeTaken").HeaderCell.Style = header_styledgSummary
+            dgSummary.Columns("baliFlexiTimeTaken").DefaultCellStyle.BackColor = Color.LightYellow
+            dgSummary.Columns("baliFlexiTimeTaken").ReadOnly = True
+
+            dgSummary.Columns("baliOvertime15x").HeaderCell.Value = "01 Bali Overtime (1.5x)"
+            dgSummary.Columns("baliOvertime15x").HeaderCell.Style = header_styledgSummary
+            dgSummary.Columns("baliOvertime15x").DefaultCellStyle.BackColor = Color.LightYellow
+            dgSummary.Columns("baliOvertime15x").ReadOnly = True
 
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
@@ -117,19 +250,19 @@ Public Class frmPayroll
 
     Private Sub dtpEndDate_ValueChanged(sender As Object, e As EventArgs) Handles dtpEndDate.ValueChanged
         Try
-            Dim a As Date
-            a = dtpEndDate.Value
-            dtpStartDate.Value = a.AddDays(-6)
+            'Dim a As Date
+            'a = dtpEndDate.Value
+            'dtpStartDate.Value = a.AddDays(-6)
 
-            'Dim dtp As DateTimePicker = DirectCast(sender, DateTimePicker)
+            ''Dim dtp As DateTimePicker = DirectCast(sender, DateTimePicker)
 
-            Dim seldate As DateTime = dtpEndDate.Value
-            If seldate.DayOfWeek <> DayOfWeek.Sunday Then
-                Dim offset As Integer = DayOfWeek.Sunday - seldate.DayOfWeek
-                Dim sunday As DateTime = seldate + TimeSpan.FromDays(offset)
-                'MsgBox("Can only select a Sunday!", vbCritical, "Oops!")
-                dtpEndDate.Value = sunday
-            End If
+            'Dim seldate As DateTime = dtpEndDate.Value
+            'If seldate.DayOfWeek <> DayOfWeek.Sunday Then
+            '    Dim offset As Integer = DayOfWeek.Sunday - seldate.DayOfWeek
+            '    Dim sunday As DateTime = seldate + TimeSpan.FromDays(offset)
+            '    'MsgBox("Can only select a Sunday!", vbCritical, "Oops!")
+            '    dtpEndDate.Value = sunday
+            'End If
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
         End Try
@@ -137,19 +270,19 @@ Public Class frmPayroll
 
     Private Sub dtpStartDate_ValueChanged(sender As Object, e As EventArgs) Handles dtpStartDate.ValueChanged
         Try
-            Dim a As Date
-            a = dtpStartDate.Value
-            dtpEndDate.Value = a.AddDays(+6)
+            'Dim a As Date
+            'a = dtpStartDate.Value
+            'dtpEndDate.Value = a.AddDays(+6)
 
-            'Dim dtp As DateTimePicker = DirectCast(sender, DateTimePicker)
+            ''Dim dtp As DateTimePicker = DirectCast(sender, DateTimePicker)
 
-            Dim seldate As DateTime = dtpStartDate.Value
-            If seldate.DayOfWeek <> DayOfWeek.Monday Then
-                Dim offset As Integer = DayOfWeek.Monday - seldate.DayOfWeek
-                Dim monday As DateTime = seldate + TimeSpan.FromDays(offset)
-                'MsgBox("Can only select a Monday!", vbCritical, "Oops!")
-                dtpStartDate.Value = monday
-            End If
+            'Dim seldate As DateTime = dtpStartDate.Value
+            'If seldate.DayOfWeek <> DayOfWeek.Monday Then
+            '    Dim offset As Integer = DayOfWeek.Monday - seldate.DayOfWeek
+            '    Dim monday As DateTime = seldate + TimeSpan.FromDays(offset)
+            '    'MsgBox("Can only select a Monday!", vbCritical, "Oops!")
+            '    dtpStartDate.Value = monday
+            'End If
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
         End Try
@@ -163,47 +296,9 @@ Public Class frmPayroll
 
                 Dim appPath As String = My.Application.Info.DirectoryPath
                 originalFile = OpenFileDialog1.FileName
-                copyOriginalFileTarget = appPath & "\Payroll Bali Excell Import\" & System.IO.Path.GetFileName(originalFile)
 
-                'File.Copy(originalFile, copyOriginalFileTarget, True)
-
-                'filename = copyOriginalFileTarget
                 filename = originalFile
                 lblFileExcelImport.Text = OpenFileDialog1.FileName
-
-
-                If lblFileExcelImport.Text = "-" Then
-                    MsgBox("Please Import File Debtors Report First!")
-                Else
-                    lblproses.Visible = True
-                    lblproses.ForeColor = Color.Gold
-                    lblproses.Text = "Waiting Proccess . . . "
-
-                    importPayrollBali()
-
-                    filename = String.Empty
-                    originalFile = ""
-                    copyOriginalFileTarget = ""
-
-                    lblproses.ForeColor = Color.ForestGreen
-                    lblproses.Text = "Finish Proccess . . . "
-
-
-                    Dim func As New DllPayrollBali.classPayrollBali
-                    dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
-
-                    If dgTimeSheet.Rows.Count > 0 Then
-                        dgTimeSheet.DataSource = Nothing
-                    End If
-                    dgTimeSheet.DataSource = dt
-
-                    dtpStartDate.Value = startDate
-                    'dtpEndDate.Value = endDate
-                    prepareDatagridTimeSheet()
-
-                    Me.Cursor = Cursors.Default
-                End If
-
             Else
                 filename = String.Empty
                 lblFileExcelImport.Text = "-"
@@ -212,6 +307,56 @@ Public Class frmPayroll
             End If
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            lblproses.ForeColor = Color.Red
+            lblproses.Text = "Failed Proccess . . . "
+        End Try
+    End Sub
+
+    Private Sub btnProccess_Click(sender As Object, e As EventArgs) Handles btnProccess.Click
+        Try
+            If lblFileExcelImport.Text = "-" Then
+                MsgBox("Please Import File Debtors Report First!")
+            Else
+                lblproses.Visible = True
+                lblproses.ForeColor = Color.Gold
+                lblproses.Text = "Waiting Proccess . . . "
+
+                importPayrollBali()
+
+                filename = String.Empty
+                originalFile = ""
+                copyOriginalFileTarget = ""
+
+                lblproses.ForeColor = Color.ForestGreen
+                lblproses.Text = "Finish Proccess . . . "
+
+                Dim func As New DllPayrollBali.classPayrollBali
+
+                'Get Data dari Database fungsi getDataTimeSheetPayrollBali
+                If dt Is Nothing Then
+                    dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                Else
+                    dt = Nothing
+
+                    dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                End If
+
+                dgTimeSheet.DataSource = Nothing
+                dgTimeSheet.DataSource = dt
+
+                lblCount.Text = dgTimeSheet.Rows.Count
+
+                dtpStartDate.Value = startDate
+                dtpEndDate.Value = endDate
+                prepareDatagridTimeSheet()
+                'Get Data dari Database fungsi getDataTimeSheetPayrollBali
+
+                lblFileExcelImport.Text = "-"
+                Me.Cursor = Cursors.Default
+            End If
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            Me.Cursor = Cursors.Default
             lblproses.ForeColor = Color.Red
             lblproses.Text = "Failed Proccess . . . "
         End Try
@@ -328,6 +473,15 @@ Public Class frmPayroll
                                             clockOff = "ANNUAL LEAVE - FORM ATTACHED"
                                             breaks = "ANNUAL LEAVE - FORM ATTACHED"
                                             actualHours = "ANNUAL LEAVE - FORM ATTACHED"
+                                        ElseIf array(j, 4).ToString = "PUBHOL" Then
+                                            idImport = array(j, 1)
+                                            employeeName = array(j, 2)
+                                            dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
+                                            datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
+                                            clockOn = "PUBHOL"
+                                            clockOff = "PUBHOL"
+                                            breaks = "PUBHOL"
+                                            actualHours = "PUBHOL"
                                         Else
                                             idImport = array(j, 1)
                                             employeeName = array(j, 2)
@@ -400,6 +554,7 @@ ExitAllFor:
 
         Catch ex As Exception
             MessageBox.Show("Error has encountered " & ex.Message, "Bug Found", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Me.Cursor = Cursors.Default
             lblproses.ForeColor = Color.Red
             lblproses.Text = "Failed Proccess . . . "
         End Try
@@ -420,6 +575,257 @@ ExitAllFor:
 
     Private Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
         Try
+            'Check Datagrid Timesheet isi data atau tidak
+            If dgTimeSheet.Rows.Count <= 0 Then
+                MessageBox.Show("Please search data TimsSheet Frist!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Exit Sub
+            End If
+            'Check Datagrid Timesheet isi data atau tidak
+
+            Dim datechoosestartdate As String = Format(dtpStartDate.Value, "dd MM yyyy")
+            Dim datechooseenddate As String = Format(dtpEndDate.Value, "dd MM yyyy")
+            Dim filenameexport As String = "Export Timesheet To CSV " & datechoosestartdate & " - " & datechooseenddate
+
+            Dim saveDialogs As New SaveFileDialog()
+            saveDialogs.FileName = filenameexport
+            saveDialogs.Filter = "TXT files (.txt)|*.txt"
+            saveDialogs.FilterIndex = 2
+
+            If saveDialogs.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                Dim sFile As String = saveDialogs.FileName
+
+                Dim fileNameOnly As String = Path.GetFileNameWithoutExtension(sFile)
+                Dim extension As String = Path.GetExtension(sFile)
+                Dim path__1 As String = Path.GetDirectoryName(sFile)
+                Dim newFullPath As String = sFile
+
+                'Build the CSV file data as a Comma separated string.
+                Dim csv As String = String.Empty
+
+                'Buat Header row untuk CSV file.
+                csv += "Emp. Co./Last Name" & ","c
+                csv += "Emp. First Name" & ","c
+                csv += "Payroll Category" & ","c
+                csv += "Job" & ","c
+                csv += "Cust. Co./Last Name" & ","c
+                csv += "Cust. First Name" & ","c
+                csv += "Notes" & ","c
+                csv += "Date" & ","c
+                csv += "Units" & ","c
+                csv += "Emp. Card ID" & ","c
+                csv += "Emp. Record ID" & ","c
+                csv += "Start/Stop Time" & ","c
+                csv += "Customer Card ID" & ","c
+                csv += "Customer Record ID"
+                'Buat Header row untuk CSV file.
+
+                csv += vbCr & vbLf 'Add new line.
+
+                'Reset Datatable kalau isi refresh ulang
+                If dtTimeSheet.Rows.Count > 0 Then
+                    dtTimeSheet = Nothing
+                End If
+                'Reset Datatable kalau isi refresh ulang
+
+                'Get Data dari database fungsi getDataTimeSheetPayrollBali
+                Dim func As New DllPayrollBali.classPayrollBali
+                dtTimeSheet = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                'Get Data dari database fungsi getDataTimeSheetPayrollBali
+
+                'Adding the Rows
+                For Each column As DataColumn In dtTimeSheet.Columns
+
+                    If column.ColumnName.ToString() = "baliBaseHourly" Then
+                        For i = 0 To dtTimeSheet.Rows.Count - 1
+
+                            Dim dateTimeSheet As DateTime = dtTimeSheet.Rows(i).Item("dateTimeSheet").ToString().Replace(",", ";") & ","c
+                            Dim format As String = "dd/MM/yyyy"
+                            Dim baliBaseHourly As String = dtTimeSheet.Rows(i).Item("baliBaseHourly").ToString
+                            Dim baliOvertime As String = dtTimeSheet.Rows(i).Item("baliOvertime").ToString
+                            Dim baliHolidayPay As String = dtTimeSheet.Rows(i).Item("baliHolidayPay").ToString
+                            Dim baliSickPay As String = dtTimeSheet.Rows(i).Item("baliSickPay").ToString
+                            Dim baliFlexiTimeEarned As String = dtTimeSheet.Rows(i).Item("baliFlexiTimeEarned").ToString
+                            Dim baliFlexiTimeTaken As String = dtTimeSheet.Rows(i).Item("baliFlexiTimeTaken").ToString
+                            Dim baliOvertime15x As String = dtTimeSheet.Rows(i).Item("baliOvertime15x").ToString
+                            Dim cardId As String = ""
+
+                            If cardId = "" Then
+                                cardId = dtTimeSheet.Rows(i).Item("cardId").ToString()
+                            End If
+
+                            dtGetStaffID = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+
+                            If baliBaseHourly = "0" Or baliBaseHourly = "" Then
+                            Else
+                                csv += dtTimeSheet.Rows(i).Item("lastName").ToString().Replace(",", ";") & ","c 'Emp. Co./Last Name
+                                csv += dtTimeSheet.Rows(i).Item("firstName").ToString().Replace(",", ";") & ","c 'Emp. First Name
+                                csv += "01 Bali Base Hourly" & ","c 'Payroll Category
+                                csv += "" & ","c 'Job
+                                csv += "" & ","c 'Cust. Co./Last Name
+                                csv += "" & ","c 'Cust. First Name
+                                csv += "" & ","c 'Notes
+                                csv += dateTimeSheet.ToString(format) & ","c 'Date
+                                csv += dtTimeSheet.Rows(i).Item("baliBaseHourly").ToString().Replace(",", ";") & ","c 'Units
+                                If cardId = "" Then
+                                    csv += "*None" & ","c 'Emp. Card ID
+                                Else
+                                    csv += cardId & ","c 'Emp. Card ID
+                                End If
+                                csv += "" & ","c 'Emp. Record ID
+                                csv += "" & ","c 'Start/Stop Time
+                                csv += "" & ","c 'Customer Card ID
+                                csv += "0" 'Customer Record ID
+                                csv += vbCr & vbLf 'Add new line.
+                            End If
+
+                            If baliOvertime = "0" Or baliOvertime = "" Then
+                            Else
+                                csv += dtTimeSheet.Rows(i).Item("lastName").ToString().Replace(",", ";") & ","c 'Emp. Co./Last Name
+                                csv += dtTimeSheet.Rows(i).Item("firstName").ToString().Replace(",", ";") & ","c 'Emp. First Name
+                                csv += "01 Bali Overtime (Flat Rate)" & ","c 'Payroll Category
+                                csv += "" & ","c 'Job
+                                csv += "" & ","c 'Cust. Co./Last Name
+                                csv += "" & ","c 'Cust. First Name
+                                csv += "" & ","c 'Notes
+                                csv += dateTimeSheet.ToString(format) & ","c 'Date
+                                csv += dtTimeSheet.Rows(i).Item("baliOvertime").ToString().Replace(",", ";") & ","c 'Units
+                                If cardId = "" Then
+                                    csv += "*None" & ","c 'Emp. Card ID
+                                Else
+                                    csv += cardId & ","c 'Emp. Card ID
+                                End If
+                                csv += "" & ","c 'Emp. Record ID
+                                csv += "" & ","c 'Start/Stop Time
+                                csv += "" & ","c 'Customer Card ID
+                                csv += "0" 'Customer Record ID
+                                csv += vbCr & vbLf 'Add new line.
+                            End If
+
+                            If baliHolidayPay = "0" Or baliHolidayPay = "" Then
+                            Else
+                                csv += dtTimeSheet.Rows(i).Item("lastName").ToString().Replace(",", ";") & ","c 'Emp. Co./Last Name
+                                csv += dtTimeSheet.Rows(i).Item("firstName").ToString().Replace(",", ";") & ","c 'Emp. First Name
+                                csv += "01 Bali Holiday Pay" & ","c 'Payroll Category
+                                csv += "" & ","c 'Job
+                                csv += "" & ","c 'Cust. Co./Last Name
+                                csv += "" & ","c 'Cust. First Name
+                                csv += "" & ","c 'Notes
+                                csv += dateTimeSheet.ToString(format) & ","c 'Date
+                                csv += dtTimeSheet.Rows(i).Item("baliHolidayPay").ToString().Replace(",", ";") & ","c 'Units
+                                If cardId = "" Then
+                                    csv += "*None" & ","c 'Emp. Card ID
+                                Else
+                                    csv += cardId & ","c 'Emp. Card ID
+                                End If
+                                csv += "" & ","c 'Emp. Record ID
+                                csv += "" & ","c 'Start/Stop Time
+                                csv += "" & ","c 'Customer Card ID
+                                csv += "0" 'Customer Record ID
+                                csv += vbCr & vbLf 'Add new line.
+                            End If
+
+                            If baliSickPay = "0" Or baliSickPay = "" Then
+                            Else
+                                csv += dtTimeSheet.Rows(i).Item("lastName").ToString().Replace(",", ";") & ","c 'Emp. Co./Last Name
+                                csv += dtTimeSheet.Rows(i).Item("firstName").ToString().Replace(",", ";") & ","c 'Emp. First Name
+                                csv += "01 Bali Sick Pay" & ","c 'Payroll Category
+                                csv += "" & ","c 'Job
+                                csv += "" & ","c 'Cust. Co./Last Name
+                                csv += "" & ","c 'Cust. First Name
+                                csv += "" & ","c 'Notes
+                                csv += dateTimeSheet.ToString(format) & ","c 'Date
+                                csv += dtTimeSheet.Rows(i).Item("baliSickPay").ToString().Replace(",", ";") & ","c 'Units
+                                If cardId = "" Then
+                                    csv += "*None" & ","c 'Emp. Card ID
+                                Else
+                                    csv += cardId & ","c 'Emp. Card ID
+                                End If
+                                csv += "" & ","c 'Emp. Record ID
+                                csv += "" & ","c 'Start/Stop Time
+                                csv += "" & ","c 'Customer Card ID
+                                csv += "0" 'Customer Record ID
+                                csv += vbCr & vbLf 'Add new line.
+                            End If
+
+                            If baliFlexiTimeEarned = "0" Or baliFlexiTimeEarned = "" Then
+                            Else
+                                csv += dtTimeSheet.Rows(i).Item("lastName").ToString().Replace(",", ";") & ","c 'Emp. Co./Last Name
+                                csv += dtTimeSheet.Rows(i).Item("firstName").ToString().Replace(",", ";") & ","c 'Emp. First Name
+                                csv += "01 Bali Flexi Time - Earned" & ","c 'Payroll Category
+                                csv += "" & ","c 'Job
+                                csv += "" & ","c 'Cust. Co./Last Name
+                                csv += "" & ","c 'Cust. First Name
+                                csv += "" & ","c 'Notes
+                                csv += dateTimeSheet.ToString(format) & ","c 'Date
+                                csv += dtTimeSheet.Rows(i).Item("baliFlexiTimeEarned").ToString().Replace(",", ";") & ","c 'Units
+                                If cardId = "" Then
+                                    csv += "*None" & ","c 'Emp. Card ID
+                                Else
+                                    csv += cardId & ","c 'Emp. Card ID
+                                End If
+                                csv += "" & ","c 'Emp. Record ID
+                                csv += "" & ","c 'Start/Stop Time
+                                csv += "" & ","c 'Customer Card ID
+                                csv += "0" 'Customer Record ID
+                                csv += vbCr & vbLf 'Add new line.
+                            End If
+
+                            If baliFlexiTimeTaken = "0" Or baliFlexiTimeTaken = "" Then
+                            Else
+                                csv += dtTimeSheet.Rows(i).Item("lastName").ToString().Replace(",", ";") & ","c 'Emp. Co./Last Name
+                                csv += dtTimeSheet.Rows(i).Item("firstName").ToString().Replace(",", ";") & ","c 'Emp. First Name
+                                csv += "01 Bali Flext Time - Taken" & ","c 'Payroll Category
+                                csv += "" & ","c 'Job
+                                csv += "" & ","c 'Cust. Co./Last Name
+                                csv += "" & ","c 'Cust. First Name
+                                csv += "" & ","c 'Notes
+                                csv += dateTimeSheet.ToString(format) & ","c 'Date
+                                csv += dtTimeSheet.Rows(i).Item("baliFlexiTimeTaken").ToString().Replace(",", ";") & ","c 'Units
+                                If cardId = "" Then
+                                    csv += "*None" & ","c 'Emp. Card ID
+                                Else
+                                    csv += cardId & ","c 'Emp. Card ID
+                                End If
+                                csv += "" & ","c 'Emp. Record ID
+                                csv += "" & ","c 'Start/Stop Time
+                                csv += "" & ","c 'Customer Card ID
+                                csv += "0" 'Customer Record ID
+                                csv += vbCr & vbLf 'Add new line.
+                            End If
+
+                            If baliOvertime15x = "0" Or baliOvertime15x = "" Then
+                            Else
+                                csv += dtTimeSheet.Rows(i).Item("lastName").ToString().Replace(",", ";") & ","c 'Emp. Co./Last Name
+                                csv += dtTimeSheet.Rows(i).Item("firstName").ToString().Replace(",", ";") & ","c 'Emp. First Name
+                                csv += "01 Bali Overtime (1.5x)" & ","c 'Payroll Category
+                                csv += "" & ","c 'Job
+                                csv += "" & ","c 'Cust. Co./Last Name
+                                csv += "" & ","c 'Cust. First Name
+                                csv += "" & ","c 'Notes
+                                csv += dateTimeSheet.ToString(format) & ","c 'Date
+                                csv += dtTimeSheet.Rows(i).Item("baliOvertime15x").ToString().Replace(",", ";") & ","c 'Units
+                                If cardId = "" Then
+                                    csv += "*None" & ","c 'Emp. Card ID
+                                Else
+                                    csv += cardId & ","c 'Emp. Card ID
+                                End If
+                                csv += "" & ","c 'Emp. Record ID
+                                csv += "" & ","c 'Start/Stop Time
+                                csv += "" & ","c 'Customer Card ID
+                                csv += "0" 'Customer Record ID
+                                csv += vbCr & vbLf 'Add new line.
+                            End If
+
+                        Next
+                    End If
+                Next
+
+                'Exporting to CSV File
+                'Dim folderPath As String = "C:\CSV\"
+                File.WriteAllText(newFullPath, csv)
+                MessageBox.Show("Export CSV Successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                'Exporting to CSV File
+            End If
 
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
@@ -435,10 +841,62 @@ ExitAllFor:
             endDateFixed = endDate.ToString("yyyy-MM-dd HH:mm:ss")
 
             Dim func As New DllPayrollBali.classPayrollBali
-            dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+
+            '----- Untuk Ambil Data Time Sheet Dari Tabel timesheetbali -----
+            If dt Is Nothing Then
+                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+            Else
+                dt = Nothing
+
+                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+            End If
+
+            'dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+
+            If dgTimeSheet.Rows.Count >= 0 Then
+                dgTimeSheet.DataSource = Nothing
+            End If
 
             dgTimeSheet.DataSource = dt
+            lblCount.Text = dgTimeSheet.Rows.Count
             prepareDatagridTimeSheet()
+            '----- Untuk Ambil Data Time Sheet Dari Tabel timesheetbali -----
+
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub btnRefreshSum_Click(sender As Object, e As EventArgs) Handles btnRefreshSum.Click
+        Try
+            startDate = DateTime.Parse(dtpStartDate.Text)
+            endDate = DateTime.Parse(dtpEndDate.Text)
+
+            startDateFixed = startDate.ToString("yyyy-MM-dd HH:mm:ss")
+            endDateFixed = endDate.ToString("yyyy-MM-dd HH:mm:ss")
+
+            Dim func As New DllPayrollBali.classPayrollBali
+
+            '----- Untuk Ambil Data Summary Dari Tabel timesheetbali dan di jumlahkan sesuai dengan tanggal yang di cari -----
+            If dt2 Is Nothing Then
+                dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed)
+            Else
+                dt2 = Nothing
+
+                dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed)
+            End If
+
+            'dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed)
+
+            If dgSummary.Rows.Count >= 0 Then
+                dgSummary.DataSource = Nothing
+            End If
+
+            dgSummary.DataSource = dt2
+            lblCountSum.Text = dgSummary.Rows.Count
+            prepareDatagridSummary()
+            '----- Untuk Ambil Data Summary Dari Tabel timesheetbali dan di jumlahkan sesuai dengan tanggal yang di cari -----
+
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
         End Try
@@ -528,11 +986,15 @@ ExitAllFor:
                 End If
             End If
 
-            toBePaidHoursDec = baliBaseHourlyDec + baliOvertimeDec + baliHolidayPayDec + baliSickPayDec + baliFlexiTimeEarnedDec + baliFlexiTimeTakenDec + baliOvertime15xDec
+            'Untuk hitung hasil penjumlahan dari yang diinputkan
+            toBePaidHoursDec = baliBaseHourlyDec + baliOvertimeDec + baliHolidayPayDec + baliSickPayDec + baliFlexiTimeEarnedDec + baliOvertime15xDec
             toBePaidHours = toBePaidHoursDec
             dgTimeSheet.Rows(e.RowIndex).Cells("toBePaidHours").Value = toBePaidHoursDec
+            'Untuk hitung hasil penjumlahan dari yang diinputkan
 
+            'Untuk Simpan Ke Database Table timesheetbali jika ada data yang berubah / diketik dari datagrid view
             func.updatePayrollBaliCountDataTimeSheet(toBePaidHours, baliBaseHourly, baliOvertime, baliHolidayPay, baliSickPay, baliFlexiTimeEarned, baliFlexiTimeTaken, baliOvertime15x, id)
+            'Untuk Simpan Ke Database Table timesheetbali jika ada data yang berubah / diketik dari datagrid view
 
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
@@ -659,12 +1121,31 @@ ExitAllFor:
                 End If
             End If
 
-            toBePaidHoursDec = baliBaseHourlyDec + baliOvertimeDec + baliHolidayPayDec + baliSickPayDec + baliFlexiTimeEarnedDec + baliFlexiTimeTakenDec + baliOvertime15xDec
+            'Untuk hitung hasil penjumlahan dari yang diinputkan
+            toBePaidHoursDec = baliBaseHourlyDec + baliOvertimeDec + baliHolidayPayDec + baliSickPayDec + baliFlexiTimeEarnedDec + baliOvertime15xDec
             toBePaidHours = toBePaidHoursDec
             dgTimeSheet.Rows(e.RowIndex).Cells("toBePaidHours").Value = toBePaidHoursDec
+            'Untuk hitung hasil penjumlahan dari yang diinputkan
 
+            'Untuk Simpan Ke Database Table timesheetbali jika ada data yang berubah / diketik dari datagrid view
             func.updatePayrollBaliCountDataTimeSheet(toBePaidHours, baliBaseHourly, baliOvertime, baliHolidayPay, baliSickPay, baliFlexiTimeEarned, baliFlexiTimeTaken, baliOvertime15x, id)
+            'Untuk Simpan Ke Database Table timesheetbali jika ada data yang berubah / diketik dari datagrid view
 
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub btnClearSerach_Click(sender As Object, e As EventArgs) Handles btnClearSerach.Click
+        Try
+            'Untuk Clear hasil search data
+            dgTimeSheet.DataSource = Nothing
+            dgSummary.DataSource = Nothing
+            dt = Nothing
+            dt2 = Nothing
+            dtTimeSheet = Nothing
+            dtGetStaffID = Nothing
+            'Untuk Clear hasil search data
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
         End Try

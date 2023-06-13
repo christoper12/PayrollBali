@@ -33,11 +33,21 @@ Partial Class frmPayroll
         OpenFileDialog1 = New OpenFileDialog()
         lblFileExcelImport = New Label()
         GroupBox1 = New GroupBox()
+        btnProccess = New Button()
         lblproses = New Label()
         btnClearFile = New Button()
         btnSearch = New Button()
+        dgSummary = New DataGridView()
+        Label3 = New Label()
+        btnRefreshSum = New Button()
+        lblCounttext = New Label()
+        lblCount = New Label()
+        lblCountSum = New Label()
+        Label5 = New Label()
+        btnClearSerach = New Button()
         CType(dgTimeSheet, ComponentModel.ISupportInitialize).BeginInit()
         GroupBox1.SuspendLayout()
+        CType(dgSummary, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' Label1
@@ -78,34 +88,34 @@ Partial Class frmPayroll
         btnImport.Name = "btnImport"
         btnImport.Size = New Size(156, 28)
         btnImport.TabIndex = 4
-        btnImport.Text = "Import"
+        btnImport.Text = "Import Timesheet"
         btnImport.UseVisualStyleBackColor = True
         ' 
         ' btnExport
         ' 
-        btnExport.Location = New Point(299, 18)
+        btnExport.Location = New Point(479, 18)
         btnExport.Name = "btnExport"
-        btnExport.Size = New Size(156, 28)
+        btnExport.Size = New Size(264, 28)
         btnExport.TabIndex = 5
-        btnExport.Text = "Export"
+        btnExport.Text = "Export Timesheet To CSV FIle"
         btnExport.UseVisualStyleBackColor = True
         ' 
         ' dgTimeSheet
         ' 
         dgTimeSheet.AllowUserToAddRows = False
         dgTimeSheet.AllowUserToDeleteRows = False
+        dgTimeSheet.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         dgTimeSheet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgTimeSheet.Location = New Point(12, 153)
-        dgTimeSheet.MultiSelect = False
         dgTimeSheet.Name = "dgTimeSheet"
         dgTimeSheet.RowHeadersWidth = 51
         dgTimeSheet.RowTemplate.Height = 29
-        dgTimeSheet.Size = New Size(1545, 559)
+        dgTimeSheet.Size = New Size(1753, 379)
         dgTimeSheet.TabIndex = 6
         ' 
         ' btnStaff
         ' 
-        btnStaff.Location = New Point(1383, 11)
+        btnStaff.Location = New Point(1132, 18)
         btnStaff.Name = "btnStaff"
         btnStaff.Size = New Size(124, 29)
         btnStaff.TabIndex = 7
@@ -125,16 +135,27 @@ Partial Class frmPayroll
         lblFileExcelImport.Text = "-"' 
         ' GroupBox1
         ' 
+        GroupBox1.Controls.Add(btnProccess)
         GroupBox1.Controls.Add(lblproses)
         GroupBox1.Controls.Add(btnClearFile)
         GroupBox1.Controls.Add(btnImport)
         GroupBox1.Controls.Add(btnExport)
         GroupBox1.Controls.Add(lblFileExcelImport)
+        GroupBox1.Controls.Add(btnStaff)
         GroupBox1.Location = New Point(14, -1)
         GroupBox1.Name = "GroupBox1"
-        GroupBox1.Size = New Size(1083, 115)
+        GroupBox1.Size = New Size(1262, 115)
         GroupBox1.TabIndex = 9
         GroupBox1.TabStop = False
+        ' 
+        ' btnProccess
+        ' 
+        btnProccess.Location = New Point(299, 18)
+        btnProccess.Name = "btnProccess"
+        btnProccess.Size = New Size(156, 28)
+        btnProccess.TabIndex = 11
+        btnProccess.Text = "Proccess"
+        btnProccess.UseVisualStyleBackColor = True
         ' 
         ' lblproses
         ' 
@@ -163,24 +184,109 @@ Partial Class frmPayroll
         btnSearch.Text = "Search"
         btnSearch.UseVisualStyleBackColor = True
         ' 
+        ' dgSummary
+        ' 
+        dgSummary.AllowUserToAddRows = False
+        dgSummary.AllowUserToDeleteRows = False
+        dgSummary.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        dgSummary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        dgSummary.Location = New Point(12, 623)
+        dgSummary.Name = "dgSummary"
+        dgSummary.RowHeadersWidth = 51
+        dgSummary.RowTemplate.Height = 29
+        dgSummary.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        dgSummary.Size = New Size(1753, 449)
+        dgSummary.TabIndex = 11
+        ' 
+        ' Label3
+        ' 
+        Label3.AutoSize = True
+        Label3.Font = New Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point)
+        Label3.Location = New Point(12, 579)
+        Label3.Name = "Label3"
+        Label3.Size = New Size(152, 41)
+        Label3.TabIndex = 12
+        Label3.Text = "Summary"' 
+        ' btnRefreshSum
+        ' 
+        btnRefreshSum.Location = New Point(190, 585)
+        btnRefreshSum.Name = "btnRefreshSum"
+        btnRefreshSum.Size = New Size(143, 29)
+        btnRefreshSum.TabIndex = 13
+        btnRefreshSum.Text = "Refresh Summary"
+        btnRefreshSum.UseVisualStyleBackColor = True
+        ' 
+        ' lblCounttext
+        ' 
+        lblCounttext.AutoSize = True
+        lblCounttext.Location = New Point(12, 534)
+        lblCounttext.Name = "lblCounttext"
+        lblCounttext.Size = New Size(55, 20)
+        lblCounttext.TabIndex = 14
+        lblCounttext.Text = "Count :"' 
+        ' lblCount
+        ' 
+        lblCount.AutoSize = True
+        lblCount.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
+        lblCount.Location = New Point(73, 535)
+        lblCount.Name = "lblCount"
+        lblCount.Size = New Size(18, 20)
+        lblCount.TabIndex = 15
+        lblCount.Text = "0"' 
+        ' lblCountSum
+        ' 
+        lblCountSum.AutoSize = True
+        lblCountSum.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
+        lblCountSum.Location = New Point(73, 1076)
+        lblCountSum.Name = "lblCountSum"
+        lblCountSum.Size = New Size(18, 20)
+        lblCountSum.TabIndex = 17
+        lblCountSum.Text = "0"' 
+        ' Label5
+        ' 
+        Label5.AutoSize = True
+        Label5.Location = New Point(12, 1075)
+        Label5.Name = "Label5"
+        Label5.Size = New Size(55, 20)
+        Label5.TabIndex = 16
+        Label5.Text = "Count :"' 
+        ' btnClearSerach
+        ' 
+        btnClearSerach.Location = New Point(665, 121)
+        btnClearSerach.Name = "btnClearSerach"
+        btnClearSerach.Size = New Size(118, 29)
+        btnClearSerach.TabIndex = 18
+        btnClearSerach.Text = "Clear Search"
+        btnClearSerach.UseVisualStyleBackColor = True
+        ' 
         ' frmPayroll
         ' 
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1569, 791)
+        ClientSize = New Size(1779, 1112)
+        Controls.Add(btnClearSerach)
+        Controls.Add(lblCountSum)
+        Controls.Add(Label5)
+        Controls.Add(lblCount)
+        Controls.Add(lblCounttext)
+        Controls.Add(btnRefreshSum)
+        Controls.Add(Label3)
+        Controls.Add(dgSummary)
         Controls.Add(btnSearch)
         Controls.Add(GroupBox1)
-        Controls.Add(btnStaff)
         Controls.Add(dgTimeSheet)
         Controls.Add(dtpEndDate)
         Controls.Add(Label2)
         Controls.Add(dtpStartDate)
         Controls.Add(Label1)
         Name = "frmPayroll"
+        StartPosition = FormStartPosition.CenterScreen
         Text = "Payroll Bali"
+        WindowState = FormWindowState.Maximized
         CType(dgTimeSheet, ComponentModel.ISupportInitialize).EndInit()
         GroupBox1.ResumeLayout(False)
         GroupBox1.PerformLayout()
+        CType(dgSummary, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -199,4 +305,13 @@ Partial Class frmPayroll
     Friend WithEvents btnClearFile As Button
     Friend WithEvents lblproses As Label
     Friend WithEvents btnSearch As Button
+    Friend WithEvents dgSummary As DataGridView
+    Friend WithEvents Label3 As Label
+    Friend WithEvents btnRefreshSum As Button
+    Friend WithEvents btnProccess As Button
+    Friend WithEvents lblCounttext As Label
+    Friend WithEvents lblCount As Label
+    Friend WithEvents lblCountSum As Label
+    Friend WithEvents Label5 As Label
+    Friend WithEvents btnClearSerach As Button
 End Class

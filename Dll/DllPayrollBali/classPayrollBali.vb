@@ -19,7 +19,7 @@ Public Class classPayrollBali
             dbConn.connectedMySQLPayrollBali()
             cmdmysql.Connection = dbConn.cnnMysql
             cmdmysql.CommandType = CommandType.Text
-            cmdmysql.CommandText = "SELECT * FROM staffPayrollBali WHERE status = 0"
+            cmdmysql.CommandText = "SELECT * FROM staffPayrollBali WHERE status = 0 ORDER BY firstName ASC"
             da.SelectCommand = cmdmysql
             da.Fill(ds)
             Return ds
@@ -40,7 +40,7 @@ Public Class classPayrollBali
             dbConn.connectedMySQLPayrollBali()
             cmdmysql.Connection = dbConn.cnnMysql
             cmdmysql.CommandType = CommandType.Text
-            cmdmysql.CommandText = "SELECT * FROM staffPayrollBali WHERE fullName = @fullName AND status = 0"
+            cmdmysql.CommandText = "SELECT * FROM staffPayrollBali WHERE fullName = @fullName AND status = 0 ORDER BY firstName ASC"
 
             If Not fullName Is Nothing Then
                 cmdmysql.Parameters.AddWithValue("@fullName", fullName)
@@ -423,7 +423,7 @@ Public Class classPayrollBali
             dbConn.connectedMySQLPayrollBali()
             cmdmysql.Connection = dbConn.cnnMysql
             cmdmysql.CommandType = CommandType.Text
-            cmdmysql.CommandText = "SELECT * FROM timesheetbali WHERE " & qry
+            cmdmysql.CommandText = "SELECT timesheetbali.*, staffpayrollbali.cardId FROM timesheetbali LEFT JOIN staffpayrollbali ON CONCAT(staffpayrollbali.firstName,staffpayrollbali.lastName) = CONCAT(timesheetbali.firstName,timesheetbali.lastName) WHERE " & qry & " ORDER BY firstName, dateTimeSheet ASC"
             da.SelectCommand = cmdmysql
             da.Fill(dt)
             Return dt
@@ -448,6 +448,36 @@ Public Class classPayrollBali
             cmdmysql.Connection = dbConn.cnnMysql
             cmdmysql.CommandType = CommandType.Text
             cmdmysql.CommandText = "SELECT * FROM timesheetbali WHERE " & qry
+            da.SelectCommand = cmdmysql
+            da.Fill(dt)
+            Return dt
+
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            Return Nothing
+        Finally
+            dbConn.disconnectedMysql()
+        End Try
+    End Function
+
+    Public Function getDataSummaryTimeSheet(ByVal startDate As String, ByVal endDate As String) As DataTable
+        Dim dt As New DataTable
+        Try
+            Dim qry As String = String.Empty
+
+            If startDate <> "" Then
+                qry = "dateTimeSheet >= '" & startDate & "'"
+            End If
+
+            If endDate <> "" Then
+                qry = qry & " AND dateTimeSheet <= '" & endDate & "'"
+            End If
+
+            Dim da As New MySqlDataAdapter(cmdmysql)
+            dbConn.connectedMySQLPayrollBali()
+            cmdmysql.Connection = dbConn.cnnMysql
+            cmdmysql.CommandType = CommandType.Text
+            cmdmysql.CommandText = "SELECT firstName, lastName, TRUNCATE(COALESCE(SUM(actualHours),0),2) AS 'actualHours', TRUNCATE(SUM(toBePaidHours),2) AS 'toBePaidHours', TRUNCATE(SUM(baliBaseHourly),2) AS 'baliBaseHourly', TRUNCATE(SUM(baliOvertime),2) AS 'baliOvertime', TRUNCATE(SUM(baliHolidayPay),2) AS 'baliHolidayPay', TRUNCATE(SUM(baliSickPay),2) AS 'baliSickPay', TRUNCATE(SUM(baliFlexiTimeEarned),2) AS 'baliFlexiTimeEarned', TRUNCATE(SUM(baliFlexiTimeTaken),2) AS 'baliFlexiTimeTaken', TRUNCATE(SUM(baliOvertime15x),2) AS 'baliOvertime15x' FROM timesheetbali WHERE " & qry & " GROUP BY lastName ORDER BY firstName ASC"
             da.SelectCommand = cmdmysql
             da.Fill(dt)
             Return dt

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\csangjaya\\Documents\\Kantor\\PayrollBali\\Dll\\DllPayrollBali\\DllPayrollBali.vbproj": {}
+    "C:\\Users\\csangjaya\\Documents\\Kantor\\payrollbali\\Dll\\DllPayrollBali\\DllPayrollBali.vbproj": {}
   },
   "projects": {
-    "C:\\Users\\csangjaya\\Documents\\Kantor\\PayrollBali\\Dll\\DllPayrollBali\\DllPayrollBali.vbproj": {
+    "C:\\Users\\csangjaya\\Documents\\Kantor\\payrollbali\\Dll\\DllPayrollBali\\DllPayrollBali.vbproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\csangjaya\\Documents\\Kantor\\PayrollBali\\Dll\\DllPayrollBali\\DllPayrollBali.vbproj",
+        "projectUniqueName": "C:\\Users\\csangjaya\\Documents\\Kantor\\payrollbali\\Dll\\DllPayrollBali\\DllPayrollBali.vbproj",
         "projectName": "DllPayrollBali",
-        "projectPath": "C:\\Users\\csangjaya\\Documents\\Kantor\\PayrollBali\\Dll\\DllPayrollBali\\DllPayrollBali.vbproj",
+        "projectPath": "C:\\Users\\csangjaya\\Documents\\Kantor\\payrollbali\\Dll\\DllPayrollBali\\DllPayrollBali.vbproj",
         "packagesPath": "C:\\Users\\csangjaya\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\csangjaya\\Documents\\Kantor\\PayrollBali\\Dll\\DllPayrollBali\\obj\\",
+        "outputPath": "C:\\Users\\csangjaya\\Documents\\Kantor\\payrollbali\\Dll\\DllPayrollBali\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\csangjaya\\AppData\\Roaming\\NuGet\\NuGet.Config",
