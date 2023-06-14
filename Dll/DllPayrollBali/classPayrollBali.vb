@@ -187,14 +187,14 @@ Public Class classPayrollBali
         End Try
     End Function
 
-    Public Function insertPayrollBaliTimeSheet(ByVal idImport As String, ByVal lastName As String, ByVal firstName As String, ByVal dateTimeSheet As String, ByVal clockOn As String, ByVal clockOff As String, ByVal breaks As String, ByVal actualHours As String, ByVal dateImportCreate As String) As Boolean
+    Public Function insertPayrollBaliTimeSheet(ByVal idImport As String, ByVal lastName As String, ByVal firstName As String, ByVal dateTimeSheet As String, ByVal clockOn As String, ByVal clockOff As String, ByVal breaks As String, ByVal actualHours As String, ByVal dateImportCreate As String, ByVal staffLogin As String) As Boolean
         Dim da As New MySqlDataAdapter(cmdmysql)
         Dim dateTimeTiday As String = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
         Try
             dbConn.connectedMySQL()
             cmdmysql.Parameters.Clear()
             cmdmysql.CommandType = CommandType.Text
-            cmdmysql.CommandText = "INSERT INTO timesheetbali(idImport, lastName, firstName, dateTimeSheet, clockOn, clockOff, breaks, actualHours, created_at) VALUES(@idImport, @lastName, @firstName, @dateTimeSheet, @clockOn, @clockOff, @breaks, @actualHours, '" & dateImportCreate & "')"
+            cmdmysql.CommandText = "INSERT INTO timesheetbali(idImport, lastName, firstName, dateTimeSheet, clockOn, clockOff, breaks, actualHours, created_at, staff_add) VALUES(@idImport, @lastName, @firstName, @dateTimeSheet, @clockOn, @clockOff, @breaks, @actualHours, '" & dateImportCreate & "',@staffLogin)"
 
             If Not idImport Is Nothing Then
                 cmdmysql.Parameters.AddWithValue("@idImport", idImport)
@@ -244,6 +244,12 @@ Public Class classPayrollBali
                 cmdmysql.Parameters.AddWithValue("@actualHours", DBNull.Value)
             End If
 
+            If Not staffLogin Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@staffLogin", staffLogin)
+            Else
+                cmdmysql.Parameters.AddWithValue("@staffLogin", DBNull.Value)
+            End If
+
             cmdmysql.Connection = dbConn.cnnMysql
             cmdmysql.ExecuteNonQuery()
             Return True
@@ -256,7 +262,7 @@ Public Class classPayrollBali
         End Try
     End Function
 
-    Public Function updatePayrollBaliTimeSheet(ByVal idImport As String, ByVal employeeName As String, ByVal datesFixed As String, ByVal clockOn As String, ByVal clockOff As String, ByVal breaks As String, ByVal actualHours As String, ByVal dateImportCreate As String) As Boolean
+    Public Function updatePayrollBaliTimeSheet(ByVal idImport As String, ByVal employeeName As String, ByVal datesFixed As String, ByVal clockOn As String, ByVal clockOff As String, ByVal breaks As String, ByVal actualHours As String, ByVal dateImportCreate As String, ByVal staffLogin As String) As Boolean
         Dim da As New MySqlDataAdapter(cmdmysql)
         Try
             Dim qry As String = String.Empty
@@ -266,7 +272,7 @@ Public Class classPayrollBali
             dbConn.connectedMySQL()
             cmdmysql.Parameters.Clear()
             cmdmysql.CommandType = CommandType.Text
-            cmdmysql.CommandText = "UPDATE timesheetbali SET clockOn=@clockOn, clockOff=@clockOff, breaks=@breaks, actualHours=@actualHours, update_at='" & dateImportCreate & "' WHERE " & qry
+            cmdmysql.CommandText = "UPDATE timesheetbali SET clockOn=@clockOn, clockOff=@clockOff, breaks=@breaks, actualHours=@actualHours, update_at='" & dateImportCreate & "', staff_update=@staffLogin WHERE " & qry
             'cmdmysql.CommandText = "DELETE timesheetbali WHERE " & qry
 
             If Not clockOn Is Nothing Then
@@ -293,6 +299,12 @@ Public Class classPayrollBali
                 cmdmysql.Parameters.AddWithValue("@actualHours", DBNull.Value)
             End If
 
+            If Not staffLogin Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@staffLogin", staffLogin)
+            Else
+                cmdmysql.Parameters.AddWithValue("@staffLogin", DBNull.Value)
+            End If
+
             cmdmysql.Connection = dbConn.cnnMysql
             cmdmysql.ExecuteNonQuery()
             Return True
@@ -305,7 +317,7 @@ Public Class classPayrollBali
         End Try
     End Function
 
-    Public Function updatePayrollBaliCountDataTimeSheet(ByVal toBePaidHours As String, ByVal baliBaseHourly As String, ByVal baliOvertime As String, ByVal baliHolidayPay As String, ByVal baliSickPay As String, ByVal baliFlexiTimeEarned As String, ByVal baliFlexiTimeTaken As String, ByVal baliOvertime15x As String, ByVal id As String) As Boolean
+    Public Function updatePayrollBaliCountDataTimeSheet(ByVal toBePaidHours As String, ByVal baliBaseHourly As String, ByVal baliOvertime As String, ByVal baliHolidayPay As String, ByVal baliSickPay As String, ByVal baliFlexiTimeEarned As String, ByVal baliFlexiTimeTaken As String, ByVal baliOvertime15x As String, ByVal id As String, ByVal staffLogin As String) As Boolean
         Dim da As New MySqlDataAdapter(cmdmysql)
         Dim dateImportCreate As String = Now.ToString("yyyy-MM-dd HH:mm:ss")
         Try
@@ -318,7 +330,7 @@ Public Class classPayrollBali
             dbConn.connectedMySQL()
             cmdmysql.Parameters.Clear()
             cmdmysql.CommandType = CommandType.Text
-            cmdmysql.CommandText = "UPDATE timesheetbali SET toBePaidHours=@toBePaidHours, baliBaseHourly=@baliBaseHourly, baliOvertime=@baliOvertime, baliHolidayPay=@baliHolidayPay, baliSickPay=@baliSickPay, baliFlexiTimeEarned=@baliFlexiTimeEarned, baliFlexiTimeTaken=@baliFlexiTimeTaken, baliOvertime15x=@baliOvertime15x, update_at='" & dateImportCreate & "' WHERE " & qry
+            cmdmysql.CommandText = "UPDATE timesheetbali SET toBePaidHours=@toBePaidHours, baliBaseHourly=@baliBaseHourly, baliOvertime=@baliOvertime, baliHolidayPay=@baliHolidayPay, baliSickPay=@baliSickPay, baliFlexiTimeEarned=@baliFlexiTimeEarned, baliFlexiTimeTaken=@baliFlexiTimeTaken, baliOvertime15x=@baliOvertime15x, update_at='" & dateImportCreate & "', staff_update=@staffLogin WHERE " & qry
 
             If Not toBePaidHours Is Nothing Then
                 cmdmysql.Parameters.AddWithValue("@toBePaidHours", toBePaidHours)
@@ -366,6 +378,12 @@ Public Class classPayrollBali
                 cmdmysql.Parameters.AddWithValue("@baliOvertime15x", baliOvertime15x)
             Else
                 cmdmysql.Parameters.AddWithValue("@baliOvertime15x", DBNull.Value)
+            End If
+
+            If Not staffLogin Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@staffLogin", staffLogin)
+            Else
+                cmdmysql.Parameters.AddWithValue("@staffLogin", DBNull.Value)
             End If
 
             cmdmysql.Connection = dbConn.cnnMysql

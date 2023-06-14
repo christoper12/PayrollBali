@@ -33,6 +33,7 @@ Partial Class frmPayroll
         OpenFileDialog1 = New OpenFileDialog()
         lblFileExcelImport = New Label()
         GroupBox1 = New GroupBox()
+        btnExit = New Button()
         btnProccess = New Button()
         lblproses = New Label()
         btnClearFile = New Button()
@@ -53,7 +54,7 @@ Partial Class frmPayroll
         ' Label1
         ' 
         Label1.AutoSize = True
-        Label1.Location = New Point(14, 123)
+        Label1.Location = New Point(14, 133)
         Label1.Name = "Label1"
         Label1.Size = New Size(76, 20)
         Label1.TabIndex = 0
@@ -61,7 +62,7 @@ Partial Class frmPayroll
         ' dtpStartDate
         ' 
         dtpStartDate.Format = DateTimePickerFormat.Short
-        dtpStartDate.Location = New Point(119, 120)
+        dtpStartDate.Location = New Point(119, 130)
         dtpStartDate.Name = "dtpStartDate"
         dtpStartDate.Size = New Size(123, 27)
         dtpStartDate.TabIndex = 1
@@ -69,7 +70,7 @@ Partial Class frmPayroll
         ' Label2
         ' 
         Label2.AutoSize = True
-        Label2.Location = New Point(276, 125)
+        Label2.Location = New Point(276, 135)
         Label2.Name = "Label2"
         Label2.Size = New Size(70, 20)
         Label2.TabIndex = 2
@@ -77,7 +78,7 @@ Partial Class frmPayroll
         ' dtpEndDate
         ' 
         dtpEndDate.Format = DateTimePickerFormat.Short
-        dtpEndDate.Location = New Point(363, 120)
+        dtpEndDate.Location = New Point(363, 130)
         dtpEndDate.Name = "dtpEndDate"
         dtpEndDate.Size = New Size(123, 27)
         dtpEndDate.TabIndex = 3
@@ -106,7 +107,7 @@ Partial Class frmPayroll
         dgTimeSheet.AllowUserToDeleteRows = False
         dgTimeSheet.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         dgTimeSheet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        dgTimeSheet.Location = New Point(12, 153)
+        dgTimeSheet.Location = New Point(12, 163)
         dgTimeSheet.Name = "dgTimeSheet"
         dgTimeSheet.RowHeadersWidth = 51
         dgTimeSheet.RowTemplate.Height = 29
@@ -135,6 +136,7 @@ Partial Class frmPayroll
         lblFileExcelImport.Text = "-"' 
         ' GroupBox1
         ' 
+        GroupBox1.Controls.Add(btnExit)
         GroupBox1.Controls.Add(btnProccess)
         GroupBox1.Controls.Add(lblproses)
         GroupBox1.Controls.Add(btnClearFile)
@@ -144,9 +146,18 @@ Partial Class frmPayroll
         GroupBox1.Controls.Add(btnStaff)
         GroupBox1.Location = New Point(14, -1)
         GroupBox1.Name = "GroupBox1"
-        GroupBox1.Size = New Size(1262, 115)
+        GroupBox1.Size = New Size(1262, 125)
         GroupBox1.TabIndex = 9
         GroupBox1.TabStop = False
+        ' 
+        ' btnExit
+        ' 
+        btnExit.Location = New Point(1132, 88)
+        btnExit.Name = "btnExit"
+        btnExit.Size = New Size(124, 29)
+        btnExit.TabIndex = 12
+        btnExit.Text = "Exit"
+        btnExit.UseVisualStyleBackColor = True
         ' 
         ' btnProccess
         ' 
@@ -177,7 +188,7 @@ Partial Class frmPayroll
         ' 
         ' btnSearch
         ' 
-        btnSearch.Location = New Point(529, 120)
+        btnSearch.Location = New Point(529, 130)
         btnSearch.Name = "btnSearch"
         btnSearch.Size = New Size(118, 29)
         btnSearch.TabIndex = 10
@@ -190,7 +201,7 @@ Partial Class frmPayroll
         dgSummary.AllowUserToDeleteRows = False
         dgSummary.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         dgSummary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        dgSummary.Location = New Point(12, 623)
+        dgSummary.Location = New Point(12, 631)
         dgSummary.Name = "dgSummary"
         dgSummary.RowHeadersWidth = 51
         dgSummary.RowTemplate.Height = 29
@@ -219,7 +230,7 @@ Partial Class frmPayroll
         ' lblCounttext
         ' 
         lblCounttext.AutoSize = True
-        lblCounttext.Location = New Point(12, 534)
+        lblCounttext.Location = New Point(12, 544)
         lblCounttext.Name = "lblCounttext"
         lblCounttext.Size = New Size(55, 20)
         lblCounttext.TabIndex = 14
@@ -228,7 +239,7 @@ Partial Class frmPayroll
         ' 
         lblCount.AutoSize = True
         lblCount.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
-        lblCount.Location = New Point(73, 535)
+        lblCount.Location = New Point(73, 545)
         lblCount.Name = "lblCount"
         lblCount.Size = New Size(18, 20)
         lblCount.TabIndex = 15
@@ -237,7 +248,7 @@ Partial Class frmPayroll
         ' 
         lblCountSum.AutoSize = True
         lblCountSum.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
-        lblCountSum.Location = New Point(73, 1076)
+        lblCountSum.Location = New Point(73, 1084)
         lblCountSum.Name = "lblCountSum"
         lblCountSum.Size = New Size(18, 20)
         lblCountSum.TabIndex = 17
@@ -245,14 +256,14 @@ Partial Class frmPayroll
         ' Label5
         ' 
         Label5.AutoSize = True
-        Label5.Location = New Point(12, 1075)
+        Label5.Location = New Point(12, 1083)
         Label5.Name = "Label5"
         Label5.Size = New Size(55, 20)
         Label5.TabIndex = 16
         Label5.Text = "Count :"' 
         ' btnClearSerach
         ' 
-        btnClearSerach.Location = New Point(665, 121)
+        btnClearSerach.Location = New Point(665, 131)
         btnClearSerach.Name = "btnClearSerach"
         btnClearSerach.Size = New Size(118, 29)
         btnClearSerach.TabIndex = 18
@@ -263,7 +274,7 @@ Partial Class frmPayroll
         ' 
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1779, 1112)
+        ClientSize = New Size(1779, 1119)
         Controls.Add(btnClearSerach)
         Controls.Add(lblCountSum)
         Controls.Add(Label5)
@@ -314,4 +325,5 @@ Partial Class frmPayroll
     Friend WithEvents lblCountSum As Label
     Friend WithEvents Label5 As Label
     Friend WithEvents btnClearSerach As Button
+    Friend WithEvents btnExit As Button
 End Class

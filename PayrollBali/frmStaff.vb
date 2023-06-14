@@ -1,7 +1,4 @@
-﻿Imports Org.BouncyCastle.Utilities
-Imports System.Threading
-
-Public Class frmStaff
+﻿Public Class frmStaff
     Private logger As New DllLogger.ClassLogger
 
     Sub firstLoad()
@@ -155,8 +152,10 @@ Public Class frmStaff
 
     Private Sub btnDelete_Click(sender As Object, e As EventArgs) Handles btnDelete.Click
         Try
+            Me.Cursor = Cursors.WaitCursor
+
             If idStaff = "" Then
-                MsgBox("Please Select Data To Delete!")
+                MessageBox.Show("Please Select Data To Delete!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Else
                 Dim result As DialogResult = MessageBox.Show("Are You Sure To Delete This Data?", "Warning", MessageBoxButtons.YesNo)
                 If result = DialogResult.No Then
@@ -190,12 +189,17 @@ Public Class frmStaff
             End If
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            Me.Cursor = Cursors.Default
+        Finally
+            Me.Cursor = Cursors.Default
         End Try
     End Sub
 
     Dim status As String = ""
     Private Sub btnAdd_Click(sender As Object, e As EventArgs) Handles btnAdd.Click
         Try
+            Me.Cursor = Cursors.WaitCursor
+
             lblStatus.Visible = True
             lblStatus.Text = "Add Staff"
             txtFullName.Enabled = True
@@ -216,12 +220,17 @@ Public Class frmStaff
 
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            Me.Cursor = Cursors.Default
+        Finally
+            Me.Cursor = Cursors.Default
         End Try
     End Sub
 
 
     Private Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
         Try
+            Me.Cursor = Cursors.WaitCursor
+
             If status = "add" Then
                 addStaff()
             ElseIf status = "update" Then
@@ -229,6 +238,9 @@ Public Class frmStaff
             End If
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            Me.Cursor = Cursors.Default
+        Finally
+            Me.Cursor = Cursors.Default
         End Try
     End Sub
 
@@ -398,6 +410,8 @@ Public Class frmStaff
 
     Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
         Try
+            Me.Cursor = Cursors.WaitCursor
+
             status = String.Empty
             clearData()
             btnCancel.Enabled = False
@@ -409,6 +423,9 @@ Public Class frmStaff
             lblStatus.Text = ""
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            Me.Cursor = Cursors.Default
+        Finally
+            Me.Cursor = Cursors.Default
         End Try
     End Sub
 
