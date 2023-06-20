@@ -1,5 +1,6 @@
 ﻿Imports System.Globalization
 Imports System.IO
+Imports Mysqlx.XDevAPI.Relational
 Imports tesExcel = Microsoft.Office.Interop.Excel
 
 Public Class frmPayroll
@@ -14,6 +15,7 @@ Public Class frmPayroll
     Dim startDateFixed As String = String.Empty
     Dim endDateFixed As String = String.Empty
     Public staffidPublic As String = String.Empty
+    Dim empName As String = String.Empty
 
     Private Sub frmPayroll_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
@@ -29,18 +31,35 @@ Public Class frmPayroll
             'DateTime Date = DateTime.ParseExact(Text, "dd/MM/yyyy", CultureInfo.InvariantCulture)
             'String reformatted = Date.ToString("yyyyMMdd", CultureInfo.InvariantCulture)
 
+            loadDataDatagridTimeSheet()
+            loadDataDatagridSummary()
+
+            lblFileExcelImport.Text = "-"
+            lblproses.Visible = False
+            lblproses.Text = "-"
+            filename = ""
+            copyOriginalFileTarget = ""
+            originalFile = ""
+            btnDeleteRowTimesheet.Enabled = False
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Sub loadDataDatagridTimeSheet()
+        Try
             Dim func As New DllPayrollBali.classPayrollBali
 
             '----- Untuk Ambil Data Time Sheet Dari Tabel timesheetbali -----
             If dt Is Nothing Then
-                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
             Else
                 dt = Nothing
 
-                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
             End If
 
-            dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+            dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
 
             If dgTimeSheet.Rows.Count >= 0 Then
                 dgTimeSheet.DataSource = Nothing
@@ -49,18 +68,27 @@ Public Class frmPayroll
             dgTimeSheet.DataSource = dt
             lblCount.Text = dgTimeSheet.Rows.Count
             prepareDatagridTimeSheet()
+            btnDeleteRowTimesheet.Enabled = False
             '----- Untuk Ambil Data Time Sheet Dari Tabel timesheetbali -----
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Sub loadDataDatagridSummary()
+        Try
+            Dim func As New DllPayrollBali.classPayrollBali
 
             '----- Untuk Ambil Data Summary Dari Tabel timesheetbali dan di jumlahkan sesuai dengan tanggal yang di cari -----
             If dt2 Is Nothing Then
-                dt2 = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                dt2 = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
             Else
                 dt2 = Nothing
 
-                dt2 = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                dt2 = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
             End If
 
-            dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed)
+            dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed, empName)
 
             If dgSummary.Rows.Count >= 0 Then
                 dgSummary.DataSource = Nothing
@@ -70,13 +98,6 @@ Public Class frmPayroll
             lblCountSum.Text = dgSummary.Rows.Count
             prepareDatagridSummary()
             '----- Untuk Ambil Data Summary Dari Tabel timesheetbali dan di jumlahkan sesuai dengan tanggal yang di cari -----
-
-            lblFileExcelImport.Text = "-"
-            lblproses.Visible = False
-            lblproses.Text = "-"
-            filename = ""
-            copyOriginalFileTarget = ""
-            originalFile = ""
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
         End Try
@@ -97,35 +118,36 @@ Public Class frmPayroll
             dgTimeSheet.Columns("idImport").Visible = False
 
             dgTimeSheet.Columns("lastName").HeaderCell.Value = "Last Name"
-            dgTimeSheet.Columns("lastName").ReadOnly = True
+            'dgTimeSheet.Columns("lastName").ReadOnly = True
             dgTimeSheet.Columns("lastName").Frozen = True
 
             dgTimeSheet.Columns("firstName").HeaderCell.Value = "First Name"
-            dgTimeSheet.Columns("firstName").ReadOnly = True
+            'dgTimeSheet.Columns("firstName").ReadOnly = True
             dgTimeSheet.Columns("firstName").Frozen = True
 
             dgTimeSheet.Columns("dateTimeSheet").HeaderCell.Value = "Date"
-            dgTimeSheet.Columns("dateTimeSheet").ReadOnly = True
+            'dgTimeSheet.Columns("dateTimeSheet").ReadOnly = True
             dgTimeSheet.Columns("dateTimeSheet").Frozen = True
+            dgTimeSheet.Columns("dateTimeSheet").DefaultCellStyle.Format = "dd/MM/yyyy"
 
             dgTimeSheet.Columns("clockOn").HeaderCell.Value = "Clock On"
-            dgTimeSheet.Columns("clockOn").ReadOnly = True
+            'dgTimeSheet.Columns("clockOn").ReadOnly = True
             dgTimeSheet.Columns("clockOn").Frozen = True
 
             dgTimeSheet.Columns("clockOff").HeaderCell.Value = "Clock Off"
-            dgTimeSheet.Columns("clockOff").ReadOnly = True
+            'dgTimeSheet.Columns("clockOff").ReadOnly = True
             dgTimeSheet.Columns("clockOff").Frozen = True
 
             dgTimeSheet.Columns("breaks").HeaderCell.Value = "Breaks"
-            dgTimeSheet.Columns("breaks").ReadOnly = True
+            'dgTimeSheet.Columns("breaks").ReadOnly = True
             dgTimeSheet.Columns("breaks").Frozen = True
 
             dgTimeSheet.Columns("actualHours").HeaderCell.Value = "Actual Hours"
-            dgTimeSheet.Columns("actualHours").ReadOnly = True
+            'dgTimeSheet.Columns("actualHours").ReadOnly = True
             dgTimeSheet.Columns("actualHours").Frozen = True
 
             dgTimeSheet.Columns("toBePaidHours").HeaderCell.Value = "To Be Paid Hours"
-            dgTimeSheet.Columns("toBePaidHours").ReadOnly = True
+            'dgTimeSheet.Columns("toBePaidHours").ReadOnly = True
             dgTimeSheet.Columns("toBePaidHours").Frozen = True
 
             dgTimeSheet.Columns("baliBaseHourly").HeaderCell.Value = "01 Bali Base Hourly"
@@ -161,7 +183,7 @@ Public Class frmPayroll
             dgTimeSheet.Columns("update_at").Visible = False
             dgTimeSheet.Columns("staff_update").Visible = False
             dgTimeSheet.Columns("cardId").Visible = False
-
+            'dateTimePicker1.Visible = False
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
         End Try
@@ -329,11 +351,11 @@ Public Class frmPayroll
 
                 'Get Data dari Database fungsi getDataTimeSheetPayrollBali
                 If dt Is Nothing Then
-                    dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                    dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
                 Else
                     dt = Nothing
 
-                    dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                    dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
                 End If
 
                 dgTimeSheet.DataSource = Nothing
@@ -638,7 +660,7 @@ ExitAllFor:
 
                 'Get Data dari database fungsi getDataTimeSheetPayrollBali
                 Dim func As New DllPayrollBali.classPayrollBali
-                dtTimeSheet = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                dtTimeSheet = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
                 'Get Data dari database fungsi getDataTimeSheetPayrollBali
 
                 'Adding the Rows
@@ -663,7 +685,7 @@ ExitAllFor:
                                 cardId = dtTimeSheet.Rows(i).Item("cardId").ToString()
                             End If
 
-                            dtGetStaffID = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                            dtGetStaffID = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
                             'Get card ID dari database table join staffpayrollbali dan timesheetbali
 
 
@@ -861,15 +883,21 @@ ExitAllFor:
             startDateFixed = startDate.ToString("yyyy-MM-dd HH:mm:ss")
             endDateFixed = endDate.ToString("yyyy-MM-dd HH:mm:ss")
 
+            If txtEmp.Text <> "" Then
+                empName = txtEmp.Text
+            Else
+                empName = ""
+            End If
+
             Dim func As New DllPayrollBali.classPayrollBali
 
             '----- Untuk Ambil Data Time Sheet Dari Tabel timesheetbali -----
             If dt Is Nothing Then
-                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
             Else
                 dt = Nothing
 
-                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
+                dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
             End If
 
             'dt = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed)
@@ -881,6 +909,7 @@ ExitAllFor:
             dgTimeSheet.DataSource = dt
             lblCount.Text = dgTimeSheet.Rows.Count
             prepareDatagridTimeSheet()
+            btnDeleteRowTimesheet.Enabled = False
             '----- Untuk Ambil Data Time Sheet Dari Tabel timesheetbali -----
 
         Catch ex As Exception
@@ -905,14 +934,14 @@ ExitAllFor:
 
             '----- Untuk Ambil Data Summary Dari Tabel timesheetbali dan di jumlahkan sesuai dengan tanggal yang di cari -----
             If dt2 Is Nothing Then
-                dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed)
+                dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed, empName)
             Else
                 dt2 = Nothing
 
-                dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed)
+                dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed, empName)
             End If
 
-            'dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed)
+            'dt2 = func.getDataSummaryTimeSheet(startDateFixed, endDateFixed, empName)
 
             If dgSummary.Rows.Count >= 0 Then
                 dgSummary.DataSource = Nothing
@@ -962,8 +991,58 @@ ExitAllFor:
             Dim id As String = String.Empty
             Dim func As New DllPayrollBali.classPayrollBali
 
+            Dim idImpor As String = String.Empty
+            Dim lastName As String = String.Empty
+            Dim firstName As String = String.Empty
+            Dim dateTimeSheet As DateTime = Nothing
+            Dim dateTimeSheetFixed As String = String.Empty
+            Dim clockOn As String = String.Empty
+            Dim clockOff As String = String.Empty
+            Dim breaks As String = String.Empty
+            Dim actualHours As String = String.Empty
+            Dim dateImportCreate As String = Now.ToString("yyyy-MM-dd HH:mm:ss")
+            Dim staffLogin As String = staffidPublic
 
-            id = dgTimeSheet.Rows(e.RowIndex).Cells("id").Value
+            If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("id").Value.ToString())) Then
+            Else
+                id = dgTimeSheet.Rows(e.RowIndex).Cells("id").Value
+            End If
+
+            If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("lastName").Value.ToString())) Then
+            Else
+                lastName = dgTimeSheet.Rows(e.RowIndex).Cells("lastName").Value
+            End If
+
+            If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("firstName").Value.ToString())) Then
+            Else
+                firstName = dgTimeSheet.Rows(e.RowIndex).Cells("firstName").Value
+            End If
+
+            If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("dateTimeSheet").Value.ToString())) Then
+            Else
+                dateTimeSheet = dgTimeSheet.Rows(e.RowIndex).Cells("dateTimeSheet").Value
+                dateTimeSheetFixed = dateTimeSheet.ToString("yyyy-MM-dd HH:mm:ss")
+            End If
+
+            If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("clockOn").Value.ToString())) Then
+            Else
+                clockOn = dgTimeSheet.Rows(e.RowIndex).Cells("clockOn").Value
+            End If
+
+            If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("clockOff").Value.ToString())) Then
+            Else
+                clockOff = dgTimeSheet.Rows(e.RowIndex).Cells("clockOff").Value
+            End If
+
+            If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("breaks").Value.ToString())) Then
+            Else
+                breaks = dgTimeSheet.Rows(e.RowIndex).Cells("breaks").Value
+            End If
+
+            If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("actualHours").Value.ToString())) Then
+            Else
+                actualHours = dgTimeSheet.Rows(e.RowIndex).Cells("actualHours").Value
+            End If
 
             If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("baliBaseHourly").Value.ToString())) Then
             Else
@@ -1003,25 +1082,36 @@ ExitAllFor:
 
             If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value.ToString())) Then
             Else
-                dt = func.getDataPayrollBalibaliOvertime15x(id)
-                If dt.Rows.Count > 0 Then
-                    If dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value = dt.Rows(0).Item("baliOvertime15x").ToString() Then
-                        baliOvertime15x = dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value
-                        baliOvertime15xDec = dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value
-                        dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value = baliOvertime15x
-                    Else
-                        baliOvertime15x = dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value * 1.5
-                        baliOvertime15xDec = dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value * 1.5
-                        dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value = baliOvertime15x
-                    End If
-                End If
+                'dt = func.getDataPayrollBalibaliOvertime15x(id)
+                'If dt.Rows.Count > 0 Then
+                'If dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value = dt.Rows(0).Item("baliOvertime15x").ToString() Then
+                baliOvertime15x = dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value
+                baliOvertime15xDec = dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value
+                dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value = baliOvertime15x
+                'Else
+                '    baliOvertime15x = dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value * 1.5
+                '    baliOvertime15xDec = dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value * 1.5
+                '    dgTimeSheet.Rows(e.RowIndex).Cells("baliOvertime15x").Value = baliOvertime15x * 1.5
+                'End If
+                'End If
             End If
 
             'Untuk hitung hasil penjumlahan dari yang diinputkan
-            toBePaidHoursDec = baliBaseHourlyDec + baliOvertimeDec + baliHolidayPayDec + baliSickPayDec + baliFlexiTimeEarnedDec + baliOvertime15xDec
+            toBePaidHoursDec = baliBaseHourlyDec + baliOvertimeDec + baliHolidayPayDec + baliSickPayDec + baliFlexiTimeEarnedDec + (baliOvertime15xDec * 1.5)
             toBePaidHours = toBePaidHoursDec
-            dgTimeSheet.Rows(e.RowIndex).Cells("toBePaidHours").Value = toBePaidHoursDec
+            dgTimeSheet.Rows(e.RowIndex).Cells("toBePaidHours").Value = Format(toBePaidHoursDec, "0.00")
             'Untuk hitung hasil penjumlahan dari yang diinputkan
+
+            If id = "" Then
+                If lastName <> "" And firstName <> "" And dateTimeSheetFixed <> "" And clockOn <> "" And clockOff <> "" And breaks <> "" And actualHours <> "" Then
+                    func.insertPayrollBaliTimeSheetManual(idImpor, lastName, firstName, dateTimeSheetFixed, clockOn, clockOff, breaks, actualHours, dateImportCreate, staffLogin)
+                    getIdTimesheet = ""
+                    loadDataDatagridTimeSheet()
+                End If
+            Else
+                func.updatePayrollBaliTimeSheetDataStaff(idImpor, lastName, firstName, dateTimeSheetFixed, clockOn, clockOff, breaks, actualHours, dateImportCreate, id, staffLogin)
+                getIdTimesheet = ""
+            End If
 
             'Untuk Simpan Ke Database Table timesheetbali jika ada data yang berubah / diketik dari datagrid view
             If dgTimeSheet.Rows.Count > 0 Then
@@ -1034,6 +1124,130 @@ ExitAllFor:
         Finally
             Me.Cursor = Cursors.Default
         End Try
+    End Sub
+
+    Dim getIdTimesheet As String = String.Empty
+    Private dateTimePicker1 As DateTimePicker
+    Dim colum As String = ""
+    Dim oldColum As String = ""
+    Dim row As String = ""
+    Private Sub dgTimeSheet_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgTimeSheet.CellClick
+        Try
+            'If Not e.RowIndex = -1 Then
+            '    If e.ColumnIndex = 4 Then
+            '        colum = dgTimeSheet.Rows(e.RowIndex).Cells("id").Value
+
+            '        If colum <> oldColum Then
+            '            dateTimePicker1 = New DateTimePicker()
+            '        ElseIf colum = oldColum Then
+            '            dateTimePicker1.Visible = False
+            '            dateTimePicker1 = New DateTimePicker()
+            '        End If
+            '        'Dim dt = New DataTable()
+            '        'dt.Columns.Add("Date", GetType(DateTime))
+            '        'dt.Rows.Add(DateTime.Now)
+            '        'dt.Rows.Add(DateTime.Now)
+            '        'Dim column = New CalendarColumn()
+            '        'column.DataPropertyName = "dateTimeSheet"
+
+            '        dgTimeSheet.Controls.Add(dateTimePicker1)
+            '        'Me.dgTimeSheet.Columns.Add(column)
+            '        'Me.dgTimeSheet.DataSource = dt
+
+            '        dateTimePicker1.Format = DateTimePickerFormat.Short
+            '        ' Create retangular area that represents the display area for a cell.
+            '        Dim oRectangle As Rectangle = dgTimeSheet.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, True)
+            '        ' Setting area for dateTimePicker1.
+            '        dateTimePicker1.Size = New Size(oRectangle.Width, oRectangle.Height)
+            '        ' Setting location for dateTimePicker1.
+            '        dateTimePicker1.Location = New Point(oRectangle.X, oRectangle.Y)
+            '        ' An event attached to dateTimePicker1 which is fired when any date is selected.
+            '        AddHandler dateTimePicker1.TextChanged, AddressOf DateTimePickerChange
+            '        ' An event attached to dateTimePicker1 which is fired when DateTimeControl is closed.
+            '        AddHandler dateTimePicker1.CloseUp, AddressOf DateTimePickerClose
+            '        oldColum = colum
+            '        colum = ""
+            '    Else
+            '        'AddHandler dateTimePicker1.CloseUp, AddressOf DateTimePickerClose
+            '        'dateTimePicker1.Visible = False
+            '    End If
+            'End If
+
+            'If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("lastName").Value.ToString())) Then
+            '    dgTimeSheet.Columns("lastName").ReadOnly = False
+            'Else
+            '    dgTimeSheet.Columns("lastName").ReadOnly = True
+            'End If
+
+            'If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("firstName").Value.ToString())) Then
+            '    dgTimeSheet.Columns("firstName").ReadOnly = False
+            'Else
+            '    dgTimeSheet.Columns("firstName").ReadOnly = True
+            'End If
+
+            'If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("dateTimeSheet").Value.ToString())) Then
+            '    dgTimeSheet.Columns("dateTimeSheet").ReadOnly = False
+            'Else
+            '    dgTimeSheet.Columns("dateTimeSheet").ReadOnly = True
+            'End If
+
+            'If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("clockOn").Value.ToString())) Then
+            '    dgTimeSheet.Columns("clockOn").ReadOnly = False
+            'Else
+            '    dgTimeSheet.Columns("clockOn").ReadOnly = True
+            'End If
+
+            'If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("clockOff").Value.ToString())) Then
+            '    dgTimeSheet.Columns("clockOff").ReadOnly = False
+            'Else
+            '    dgTimeSheet.Columns("clockOff").ReadOnly = True
+            'End If
+
+            'If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("breaks").Value.ToString())) Then
+            '    dgTimeSheet.Columns("breaks").ReadOnly = False
+            'Else
+            '    dgTimeSheet.Columns("breaks").ReadOnly = True
+            'End If
+
+            'If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("actualHours").Value.ToString())) Then
+            '    dgTimeSheet.Columns("actualHours").ReadOnly = False
+            'Else
+            '    dgTimeSheet.Columns("actualHours").ReadOnly = True
+            'End If
+
+
+            getIdTimesheet = ""
+            If dgTimeSheet.SelectedRows.Count > 0 Then
+                For Each selectedItem As DataGridViewRow In dgTimeSheet.SelectedRows
+                    'show ids of multiple selected rows
+                    If getIdTimesheet = "" Then
+                        getIdTimesheet = selectedItem.Cells("id").Value
+                    Else
+                        getIdTimesheet = getIdTimesheet & "," & selectedItem.Cells("id").Value
+                    End If
+                Next selectedItem
+
+                'getIdTimesheet = dgTimeSheet.Rows(e.RowIndex).Cells("id").Value.ToString()
+                btnDeleteRowTimesheet.Enabled = True
+            Else
+                getIdTimesheet = ""
+                btnDeleteRowTimesheet.Enabled = False
+            End If
+            'End If
+
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub DateTimePickerChange(ByVal sender As Object, ByVal e As EventArgs)
+        dgTimeSheet.CurrentCell.Value = dateTimePicker1.Text.ToString()
+        MessageBox.Show(String.Format("Date changed to {0}", dateTimePicker1.Text.ToString()))
+        AddHandler dateTimePicker1.CloseUp, AddressOf DateTimePickerClose
+    End Sub
+
+    Private Sub DateTimePickerClose(ByVal sender As Object, ByVal e As EventArgs)
+        dateTimePicker1.Visible = False
     End Sub
 
     Private Sub CopyCells()
@@ -1051,6 +1265,7 @@ ExitAllFor:
             Dim ri = dgTimeSheet.CurrentCell.RowIndex
             Dim colCount = dgTimeSheet.Columns.Count
             Dim rowCount = dgTimeSheet.Rows.Count
+            dgTimeSheet.BeginEdit(True)
 
             For Each r In s.Split({ControlChars.CrLf}, StringSplitOptions.None)
                 Dim Cell = ci
@@ -1062,6 +1277,8 @@ ExitAllFor:
                 ri += 1
                 If ri >= rowCount Then Exit For
             Next
+
+            dgTimeSheet.EndEdit()
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
         End Try
@@ -1085,6 +1302,92 @@ ExitAllFor:
     End Sub
 
     Private Sub dgTimeSheet_CellLeave(sender As Object, e As DataGridViewCellEventArgs) Handles dgTimeSheet.CellLeave
+        'Try
+        '    Dim func As New DllPayrollBali.classPayrollBali
+
+        '    Dim idImpor As String = String.Empty
+        '    Dim lastName As String = String.Empty
+        '    Dim firstName As String = String.Empty
+        '    Dim dateTimeSheet As DateTime = Nothing
+        '    Dim dateTimeSheetFixed As String = String.Empty
+        '    Dim clockOn As String = String.Empty
+        '    Dim clockOff As String = String.Empty
+        '    Dim breaks As String = String.Empty
+        '    Dim actualHours As String = String.Empty
+        '    Dim dateImportCreate As String = Now.ToString("yyyy-MM-dd HH:mm:ss")
+        '    Dim staffLogin As String = staffidPublic
+        '    Dim id As String = String.Empty
+
+        '    If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("id").Value.ToString())) Then
+        '    Else
+        '        id = dgTimeSheet.Rows(e.RowIndex).Cells("id").Value
+        '    End If
+
+        '    If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("lastName").Value.ToString())) Then
+        '    Else
+        '        lastName = dgTimeSheet.Rows(e.RowIndex).Cells("lastName").Value
+        '    End If
+
+        '    If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("firstName").Value.ToString())) Then
+        '    Else
+        '        firstName = dgTimeSheet.Rows(e.RowIndex).Cells("firstName").Value
+        '    End If
+
+        '    If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("dateTimeSheet").Value.ToString())) Then
+        '    Else
+        '        dateTimeSheet = dgTimeSheet.Rows(e.RowIndex).Cells("dateTimeSheet").Value
+        '        dateTimeSheetFixed = dateTimeSheet.ToString("yyyy-MM-dd HH:mm:ss")
+        '    End If
+
+        '    If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("clockOn").Value.ToString())) Then
+        '    Else
+        '        clockOn = dgTimeSheet.Rows(e.RowIndex).Cells("clockOn").Value
+        '    End If
+
+        '    If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("clockOff").Value.ToString())) Then
+        '    Else
+        '        clockOff = dgTimeSheet.Rows(e.RowIndex).Cells("clockOff").Value
+        '    End If
+
+        '    If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("breaks").Value.ToString())) Then
+        '    Else
+        '        breaks = dgTimeSheet.Rows(e.RowIndex).Cells("breaks").Value
+        '    End If
+
+        '    If (String.IsNullOrWhiteSpace(dgTimeSheet.Rows(e.RowIndex).Cells("actualHours").Value.ToString())) Then
+        '    Else
+        '        actualHours = dgTimeSheet.Rows(e.RowIndex).Cells("actualHours").Value
+        '    End If
+
+        '    If id = "" Then
+        '        If lastName <> "" And firstName <> "" And dateTimeSheetFixed <> "" And clockOn <> "" And clockOff <> "" And breaks <> "" And actualHours <> "" Then
+        '            func.insertPayrollBaliTimeSheetManual(idImpor, lastName, firstName, dateTimeSheetFixed, clockOn, clockOff, breaks, actualHours, dateImportCreate, staffLogin)
+        '            idImpor = ""
+        '            lastName = ""
+        '            firstName = ""
+        '            dateTimeSheet = Nothing
+        '            dateTimeSheetFixed = ""
+        '            clockOn = ""
+        '            clockOff = ""
+        '            breaks = ""
+        '            actualHours = ""
+        '            dateImportCreate = ""
+        '            staffLogin = ""
+        '            getIdTimesheet = ""
+        '            id = ""
+        '            'loadDataDatagridTimeSheet()
+        '            Exit Sub
+        '        End If
+        '    Else
+        '        'func.updatePayrollBaliTimeSheetDataStaff(idImpor, lastName, firstName, dateTimeSheet, clockOn, clockOff, breaks, actualHours, dateImportCreate, id, staffLogin)
+        '        'getIdTimesheet = ""
+        '    End If
+        'Catch ex As Exception
+        '    logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        'End Try
+
+
+
         'Try
         '    Dim toBePaidHours As String = String.Empty
         '    Dim toBePaidHoursDec As Decimal = Nothing
@@ -1194,6 +1497,9 @@ ExitAllFor:
             dt2 = Nothing
             dtTimeSheet = Nothing
             dtGetStaffID = Nothing
+            btnDeleteRowTimesheet.Enabled = False
+            txtEmp.Text = ""
+            empName = String.Empty
             'Untuk Clear hasil search data
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
@@ -1204,6 +1510,84 @@ ExitAllFor:
         Try
             Me.Close()
             frmLogin.Close()
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub btnDeleteRowTimesheet_Click(sender As Object, e As EventArgs) Handles btnDeleteRowTimesheet.Click
+        Try
+            'MsgBox(getIdTimesheet)
+            'getIdTimesheet = ""
+            If getIdTimesheet <> "" Then
+                Dim result As DialogResult = MessageBox.Show("Are You Sure Delete This Timesheet", "Delete Timesheet", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                If result = DialogResult.No Then
+                    btnDeleteRowTimesheet.Enabled = False
+                    getIdTimesheet = ""
+                ElseIf result = DialogResult.Yes Then
+                    Dim func As New DllPayrollBali.classPayrollBali
+
+                    ' Split string based on comma
+                    Dim getIdTimesheetSplit As String() = getIdTimesheet.Split(New Char() {","c})
+
+                    ' Use For Each loop over words and display them
+                    Dim getIdTimesheetSplitFix As String
+                    For Each getIdTimesheetSplitFix In getIdTimesheetSplit
+                        func.deletePayrollBaliTimeSheet(getIdTimesheetSplitFix)
+                    Next
+
+                    btnDeleteRowTimesheet.Enabled = False
+                    getIdTimesheet = ""
+                    loadDataDatagridTimeSheet()
+                    loadDataDatagridSummary()
+                End If
+            Else
+                btnDeleteRowTimesheet.Enabled = False
+            End If
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub dgTimeSheet_DataError(sender As Object, e As DataGridViewDataErrorEventArgs) Handles dgTimeSheet.DataError
+    End Sub
+
+    Dim sumCellSelected As Decimal = 0
+    Private Sub dgTimeSheet_CellMouseUp(sender As Object, e As DataGridViewCellMouseEventArgs) Handles dgTimeSheet.CellMouseUp
+        Try
+            If dgTimeSheet.SelectedCells.Count > 0 Then
+                sumCellSelected = 0
+                For Each selectedItem As DataGridViewCell In dgTimeSheet.SelectedCells
+                    If sumCellSelected = 0 Then
+                        If (String.IsNullOrWhiteSpace(selectedItem.Value.ToString())) Then
+                            'sumCellSelected = 0
+                            'lblCountAutoSum.Text = ""
+                        Else
+                            If IsNumeric(selectedItem.Value.ToString()) Then
+                                ' childAge successfully parsed as Integer
+                                sumCellSelected = selectedItem.Value
+                                lblCountAutoSum.Text = sumCellSelected
+                            End If
+                        End If
+                    Else
+                        If (String.IsNullOrWhiteSpace(selectedItem.Value.ToString())) Then
+                            'sumCellSelected = 0
+                            'lblCountAutoSum.Text = ""
+                        Else
+                            If IsNumeric(selectedItem.Value.ToString()) Then
+                                ' childAge successfully parsed as Integer
+                                sumCellSelected = sumCellSelected + selectedItem.Value
+                                lblCountAutoSum.Text = sumCellSelected
+                            End If
+                        End If
+                    End If
+                Next
+
+                If sumCellSelected = 0 Then
+                    sumCellSelected = 0
+                    lblCountAutoSum.Text = ""
+                End If
+            End If
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
         End Try

@@ -46,6 +46,11 @@ Partial Class frmPayroll
         lblCountSum = New Label()
         Label5 = New Label()
         btnClearSerach = New Button()
+        btnDeleteRowTimesheet = New Button()
+        txtEmp = New TextBox()
+        Label4 = New Label()
+        Label6 = New Label()
+        lblCountAutoSum = New Label()
         CType(dgTimeSheet, ComponentModel.ISupportInitialize).BeginInit()
         GroupBox1.SuspendLayout()
         CType(dgSummary, ComponentModel.ISupportInitialize).BeginInit()
@@ -62,7 +67,7 @@ Partial Class frmPayroll
         ' dtpStartDate
         ' 
         dtpStartDate.Format = DateTimePickerFormat.Short
-        dtpStartDate.Location = New Point(119, 130)
+        dtpStartDate.Location = New Point(96, 130)
         dtpStartDate.Name = "dtpStartDate"
         dtpStartDate.Size = New Size(123, 27)
         dtpStartDate.TabIndex = 1
@@ -70,7 +75,7 @@ Partial Class frmPayroll
         ' Label2
         ' 
         Label2.AutoSize = True
-        Label2.Location = New Point(276, 135)
+        Label2.Location = New Point(237, 133)
         Label2.Name = "Label2"
         Label2.Size = New Size(70, 20)
         Label2.TabIndex = 2
@@ -78,7 +83,7 @@ Partial Class frmPayroll
         ' dtpEndDate
         ' 
         dtpEndDate.Format = DateTimePickerFormat.Short
-        dtpEndDate.Location = New Point(363, 130)
+        dtpEndDate.Location = New Point(313, 130)
         dtpEndDate.Name = "dtpEndDate"
         dtpEndDate.Size = New Size(123, 27)
         dtpEndDate.TabIndex = 3
@@ -103,8 +108,6 @@ Partial Class frmPayroll
         ' 
         ' dgTimeSheet
         ' 
-        dgTimeSheet.AllowUserToAddRows = False
-        dgTimeSheet.AllowUserToDeleteRows = False
         dgTimeSheet.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         dgTimeSheet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgTimeSheet.Location = New Point(12, 163)
@@ -188,7 +191,7 @@ Partial Class frmPayroll
         ' 
         ' btnSearch
         ' 
-        btnSearch.Location = New Point(529, 130)
+        btnSearch.Location = New Point(946, 129)
         btnSearch.Name = "btnSearch"
         btnSearch.Size = New Size(118, 29)
         btnSearch.TabIndex = 10
@@ -201,11 +204,10 @@ Partial Class frmPayroll
         dgSummary.AllowUserToDeleteRows = False
         dgSummary.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
         dgSummary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        dgSummary.Location = New Point(12, 631)
+        dgSummary.Location = New Point(12, 648)
         dgSummary.Name = "dgSummary"
         dgSummary.RowHeadersWidth = 51
         dgSummary.RowTemplate.Height = 29
-        dgSummary.SelectionMode = DataGridViewSelectionMode.FullRowSelect
         dgSummary.Size = New Size(1753, 449)
         dgSummary.TabIndex = 11
         ' 
@@ -213,14 +215,14 @@ Partial Class frmPayroll
         ' 
         Label3.AutoSize = True
         Label3.Font = New Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point)
-        Label3.Location = New Point(12, 579)
+        Label3.Location = New Point(12, 596)
         Label3.Name = "Label3"
         Label3.Size = New Size(152, 41)
         Label3.TabIndex = 12
         Label3.Text = "Summary"' 
         ' btnRefreshSum
         ' 
-        btnRefreshSum.Location = New Point(190, 585)
+        btnRefreshSum.Location = New Point(190, 602)
         btnRefreshSum.Name = "btnRefreshSum"
         btnRefreshSum.Size = New Size(143, 29)
         btnRefreshSum.TabIndex = 13
@@ -230,7 +232,7 @@ Partial Class frmPayroll
         ' lblCounttext
         ' 
         lblCounttext.AutoSize = True
-        lblCounttext.Location = New Point(12, 544)
+        lblCounttext.Location = New Point(211, 551)
         lblCounttext.Name = "lblCounttext"
         lblCounttext.Size = New Size(55, 20)
         lblCounttext.TabIndex = 14
@@ -239,7 +241,7 @@ Partial Class frmPayroll
         ' 
         lblCount.AutoSize = True
         lblCount.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
-        lblCount.Location = New Point(73, 545)
+        lblCount.Location = New Point(272, 552)
         lblCount.Name = "lblCount"
         lblCount.Size = New Size(18, 20)
         lblCount.TabIndex = 15
@@ -248,7 +250,7 @@ Partial Class frmPayroll
         ' 
         lblCountSum.AutoSize = True
         lblCountSum.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
-        lblCountSum.Location = New Point(73, 1084)
+        lblCountSum.Location = New Point(73, 1101)
         lblCountSum.Name = "lblCountSum"
         lblCountSum.Size = New Size(18, 20)
         lblCountSum.TabIndex = 17
@@ -256,25 +258,72 @@ Partial Class frmPayroll
         ' Label5
         ' 
         Label5.AutoSize = True
-        Label5.Location = New Point(12, 1083)
+        Label5.Location = New Point(12, 1100)
         Label5.Name = "Label5"
         Label5.Size = New Size(55, 20)
         Label5.TabIndex = 16
         Label5.Text = "Count :"' 
         ' btnClearSerach
         ' 
-        btnClearSerach.Location = New Point(665, 131)
+        btnClearSerach.Location = New Point(1082, 129)
         btnClearSerach.Name = "btnClearSerach"
         btnClearSerach.Size = New Size(118, 29)
         btnClearSerach.TabIndex = 18
         btnClearSerach.Text = "Clear Search"
         btnClearSerach.UseVisualStyleBackColor = True
         ' 
+        ' btnDeleteRowTimesheet
+        ' 
+        btnDeleteRowTimesheet.Location = New Point(12, 548)
+        btnDeleteRowTimesheet.Name = "btnDeleteRowTimesheet"
+        btnDeleteRowTimesheet.Size = New Size(193, 27)
+        btnDeleteRowTimesheet.TabIndex = 13
+        btnDeleteRowTimesheet.Text = "Delete Timesheet"
+        btnDeleteRowTimesheet.UseVisualStyleBackColor = True
+        ' 
+        ' txtEmp
+        ' 
+        txtEmp.Location = New Point(567, 130)
+        txtEmp.Name = "txtEmp"
+        txtEmp.Size = New Size(364, 27)
+        txtEmp.TabIndex = 19
+        ' 
+        ' Label4
+        ' 
+        Label4.AutoSize = True
+        Label4.Location = New Point(442, 133)
+        Label4.Name = "Label4"
+        Label4.Size = New Size(119, 20)
+        Label4.TabIndex = 20
+        Label4.Text = "Employee Name"' 
+        ' Label6
+        ' 
+        Label6.AutoSize = True
+        Label6.Location = New Point(461, 551)
+        Label6.Name = "Label6"
+        Label6.Size = New Size(81, 20)
+        Label6.TabIndex = 21
+        Label6.Text = "Auto Sum :"' 
+        ' lblCountAutoSum
+        ' 
+        lblCountAutoSum.AutoSize = True
+        lblCountAutoSum.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
+        lblCountAutoSum.Location = New Point(543, 551)
+        lblCountAutoSum.Name = "lblCountAutoSum"
+        lblCountAutoSum.Size = New Size(18, 20)
+        lblCountAutoSum.TabIndex = 22
+        lblCountAutoSum.Text = "0"' 
         ' frmPayroll
         ' 
+        AcceptButton = btnSearch
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1779, 1119)
+        ClientSize = New Size(1779, 1144)
+        Controls.Add(lblCountAutoSum)
+        Controls.Add(Label6)
+        Controls.Add(Label4)
+        Controls.Add(txtEmp)
+        Controls.Add(btnDeleteRowTimesheet)
         Controls.Add(btnClearSerach)
         Controls.Add(lblCountSum)
         Controls.Add(Label5)
@@ -326,4 +375,9 @@ Partial Class frmPayroll
     Friend WithEvents Label5 As Label
     Friend WithEvents btnClearSerach As Button
     Friend WithEvents btnExit As Button
+    Friend WithEvents btnDeleteRowTimesheet As Button
+    Friend WithEvents txtEmp As TextBox
+    Friend WithEvents Label4 As Label
+    Friend WithEvents Label6 As Label
+    Friend WithEvents lblCountAutoSum As Label
 End Class

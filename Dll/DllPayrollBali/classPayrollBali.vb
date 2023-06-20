@@ -262,6 +262,196 @@ Public Class classPayrollBali
         End Try
     End Function
 
+    Public Function insertPayrollBaliTimeSheetManual(ByVal idImport As String, ByVal lastName As String, ByVal firstName As String, ByVal dateTimeSheet As String, ByVal clockOn As String, ByVal clockOff As String, ByVal breaks As String, ByVal actualHours As String, ByVal dateImportCreate As String, ByVal staffLogin As String) As Boolean
+        Dim da As New MySqlDataAdapter(cmdmysql)
+        Dim dateTimeTiday As String = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+        Try
+
+            getMaxIdfromTimesheet()
+
+            If getMaxIdfromTimesheet().Rows.Count > 0 Then
+                idImport = getMaxIdfromTimesheet().Rows(0).Item("id")
+            End If
+            dbConn.connectedMySQL()
+
+            cmdmysql.Parameters.Clear()
+            cmdmysql.CommandType = CommandType.Text
+            cmdmysql.CommandText = "INSERT INTO timesheetbali(idImport, lastName, firstName, dateTimeSheet, clockOn, clockOff, breaks, actualHours, created_at, staff_add) VALUES(@idImport, @lastName, @firstName, @dateTimeSheet, @clockOn, @clockOff, @breaks, @actualHours, '" & dateImportCreate & "',@staffLogin)"
+
+            If Not idImport Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@idImport", idImport)
+            Else
+                cmdmysql.Parameters.AddWithValue("@idImport", DBNull.Value)
+            End If
+
+            If Not lastName Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@lastName", lastName)
+            Else
+                cmdmysql.Parameters.AddWithValue("@lastName", DBNull.Value)
+            End If
+
+            If Not firstName Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@firstName", firstName)
+            Else
+                cmdmysql.Parameters.AddWithValue("@firstName", DBNull.Value)
+            End If
+
+            If Not dateTimeSheet Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@dateTimeSheet", dateTimeSheet)
+            Else
+                cmdmysql.Parameters.AddWithValue("@dateTimeSheet", DBNull.Value)
+            End If
+
+            If Not clockOn Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@clockOn", clockOn)
+            Else
+                cmdmysql.Parameters.AddWithValue("@clockOn", DBNull.Value)
+            End If
+
+            If Not clockOff Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@clockOff", clockOff)
+            Else
+                cmdmysql.Parameters.AddWithValue("@clockOff", DBNull.Value)
+            End If
+
+            If Not breaks Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@breaks", breaks)
+            Else
+                cmdmysql.Parameters.AddWithValue("@breaks", DBNull.Value)
+            End If
+
+            If Not actualHours Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@actualHours", actualHours)
+            Else
+                cmdmysql.Parameters.AddWithValue("@actualHours", DBNull.Value)
+            End If
+
+            If Not staffLogin Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@staffLogin", staffLogin)
+            Else
+                cmdmysql.Parameters.AddWithValue("@staffLogin", DBNull.Value)
+            End If
+
+            cmdmysql.Connection = dbConn.cnnMysql
+            cmdmysql.ExecuteNonQuery()
+            Return True
+
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            Return False
+        Finally
+            dbConn.disconnectedMysql()
+        End Try
+    End Function
+
+    Public Function getMaxIdfromTimesheet() As DataTable
+        Dim dt As New DataTable
+        Try
+            Dim da As New MySqlDataAdapter(cmdmysql)
+            dbConn.connectedMySQLPayrollBali()
+            cmdmysql.Connection = dbConn.cnnMysql
+            cmdmysql.CommandType = CommandType.Text
+            cmdmysql.CommandText = "SELECT MAX(id)+1 AS 'id' FROM timesheetbali"
+            da.SelectCommand = cmdmysql
+            da.Fill(dt)
+            Return dt
+
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            Return Nothing
+        Finally
+            dbConn.disconnectedMysql()
+        End Try
+    End Function
+
+    Public Function updatePayrollBaliTimeSheetDataStaff(ByVal idImport As String, ByVal lastName As String, ByVal firstName As String, ByVal datesFixed As String, ByVal clockOn As String, ByVal clockOff As String, ByVal breaks As String, ByVal actualHours As String, ByVal dateImportCreate As String, ByVal id As String, ByVal staffLogin As String) As Boolean
+        Dim da As New MySqlDataAdapter(cmdmysql)
+        Try
+            Dim qry As String = String.Empty
+            idImport = id
+
+            If id <> "" Then
+                qry = "id = '" & id & "'"
+            End If
+
+            dbConn.connectedMySQL()
+            cmdmysql.Parameters.Clear()
+            cmdmysql.CommandType = CommandType.Text
+            cmdmysql.CommandText = "UPDATE timesheetbali SET idImport=@idImport, lastName=@lastName, firstName=@firstName, dateTimeSheet=@datesFixed, clockOn=@clockOn, clockOff=@clockOff, breaks=@breaks, actualHours=@actualHours, update_at='" & dateImportCreate & "', staff_update=@staffLogin WHERE " & qry
+            'cmdmysql.CommandText = "DELETE timesheetbali WHERE " & qry
+
+            If Not idImport Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@idImport", idImport)
+            Else
+                cmdmysql.Parameters.AddWithValue("@idImport", DBNull.Value)
+            End If
+
+            If Not lastName Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@lastName", lastName)
+            Else
+                cmdmysql.Parameters.AddWithValue("@lastName", DBNull.Value)
+            End If
+
+            If Not firstName Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@firstName", firstName)
+            Else
+                cmdmysql.Parameters.AddWithValue("@firstName", DBNull.Value)
+            End If
+
+            If Not datesFixed Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@datesFixed", datesFixed)
+            Else
+                cmdmysql.Parameters.AddWithValue("@datesFixed", DBNull.Value)
+            End If
+
+            If Not clockOn Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@clockOn", clockOn)
+            Else
+                cmdmysql.Parameters.AddWithValue("@clockOn", DBNull.Value)
+            End If
+
+            If Not clockOff Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@clockOff", clockOff)
+            Else
+                cmdmysql.Parameters.AddWithValue("@clockOff", DBNull.Value)
+            End If
+
+            If Not breaks Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@breaks", breaks)
+            Else
+                cmdmysql.Parameters.AddWithValue("@breaks", DBNull.Value)
+            End If
+
+            If Not actualHours Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@actualHours", actualHours)
+            Else
+                cmdmysql.Parameters.AddWithValue("@actualHours", DBNull.Value)
+            End If
+
+            If Not dateImportCreate Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@dateImportCreate", dateImportCreate)
+            Else
+                cmdmysql.Parameters.AddWithValue("@dateImportCreate", DBNull.Value)
+            End If
+
+            If Not staffLogin Is Nothing Then
+                cmdmysql.Parameters.AddWithValue("@staffLogin", staffLogin)
+            Else
+                cmdmysql.Parameters.AddWithValue("@staffLogin", DBNull.Value)
+            End If
+
+            cmdmysql.Connection = dbConn.cnnMysql
+            cmdmysql.ExecuteNonQuery()
+            Return True
+
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            Return False
+        Finally
+            dbConn.disconnectedMysql()
+        End Try
+    End Function
+
     Public Function updatePayrollBaliTimeSheet(ByVal idImport As String, ByVal employeeName As String, ByVal datesFixed As String, ByVal clockOn As String, ByVal clockOff As String, ByVal breaks As String, ByVal actualHours As String, ByVal dateImportCreate As String, ByVal staffLogin As String) As Boolean
         Dim da As New MySqlDataAdapter(cmdmysql)
         Try
@@ -424,7 +614,7 @@ Public Class classPayrollBali
         End Try
     End Function
 
-    Public Function getDataTimeSheetPayrollBali(ByVal startDate As String, ByVal endDate As String) As DataTable
+    Public Function getDataTimeSheetPayrollBali(ByVal startDate As String, ByVal endDate As String, ByVal empName As String) As DataTable
         Dim dt As New DataTable
         Try
             Dim qry As String = String.Empty
@@ -437,11 +627,15 @@ Public Class classPayrollBali
                 qry = qry & " AND dateTimeSheet <= '" & endDate & "'"
             End If
 
+            If empName <> "" Then
+                qry = qry & " AND (timesheetbali.firstName LIKE '" & empName & "' Or timesheetbali.lastName Like '" & empName & "')"
+            End If
+
             Dim da As New MySqlDataAdapter(cmdmysql)
             dbConn.connectedMySQLPayrollBali()
             cmdmysql.Connection = dbConn.cnnMysql
             cmdmysql.CommandType = CommandType.Text
-            cmdmysql.CommandText = "SELECT timesheetbali.*, staffpayrollbali.cardId FROM timesheetbali LEFT JOIN staffpayrollbali ON CONCAT(staffpayrollbali.firstName,staffpayrollbali.lastName) = CONCAT(timesheetbali.firstName,timesheetbali.lastName) WHERE " & qry & " ORDER BY firstName, dateTimeSheet ASC"
+            cmdmysql.CommandText = "SELECT timesheetbali.id, timesheetbali.idImport, timesheetbali.lastName, timesheetbali.firstName, timesheetbali.dateTimeSheet, timesheetbali.clockOn, timesheetbali.clockOff, timesheetbali.breaks, timesheetbali.actualHours AS 'actualHours', ROUND(timesheetbali.toBePaidHours, 2) AS 'toBePaidHours', ROUND(timesheetbali.baliBaseHourly, 2) AS 'baliBaseHourly', ROUND(timesheetbali.baliOvertime, 2) AS 'baliOvertime', ROUND(timesheetbali.baliHolidayPay, 2) AS 'baliHolidayPay', ROUND(timesheetbali.baliSickPay, 2) AS 'baliSickPay', ROUND(timesheetbali.baliFlexiTimeEarned, 2) AS 'baliFlexiTimeEarned', ROUND(timesheetbali.baliFlexiTimeTaken, 2) AS 'baliFlexiTimeTaken', ROUND(timesheetbali.baliOvertime15x, 2) AS 'baliOvertime15x', timesheetbali.created_at, timesheetbali.staff_add, timesheetbali.update_at, timesheetbali.staff_update, staffpayrollbali.cardId FROM timesheetbali LEFT JOIN staffpayrollbali ON CONCAT(staffpayrollbali.firstName,staffpayrollbali.lastName) = CONCAT(timesheetbali.firstName,timesheetbali.lastName) WHERE " & qry & " ORDER BY firstName, dateTimeSheet ASC"
             da.SelectCommand = cmdmysql
             da.Fill(dt)
             Return dt
@@ -478,7 +672,7 @@ Public Class classPayrollBali
         End Try
     End Function
 
-    Public Function getDataSummaryTimeSheet(ByVal startDate As String, ByVal endDate As String) As DataTable
+    Public Function getDataSummaryTimeSheet(ByVal startDate As String, ByVal endDate As String, ByVal empName As String) As DataTable
         Dim dt As New DataTable
         Try
             Dim qry As String = String.Empty
@@ -491,11 +685,15 @@ Public Class classPayrollBali
                 qry = qry & " AND dateTimeSheet <= '" & endDate & "'"
             End If
 
+            If empName <> "" Then
+                qry = qry & " AND (timesheetbali.firstName LIKE '" & empName & "' Or timesheetbali.lastName Like '" & empName & "')"
+            End If
+
             Dim da As New MySqlDataAdapter(cmdmysql)
             dbConn.connectedMySQLPayrollBali()
             cmdmysql.Connection = dbConn.cnnMysql
             cmdmysql.CommandType = CommandType.Text
-            cmdmysql.CommandText = "SELECT firstName, lastName, TRUNCATE(COALESCE(SUM(actualHours),0),2) AS 'actualHours', TRUNCATE(SUM(toBePaidHours),2) AS 'toBePaidHours', TRUNCATE(SUM(baliBaseHourly),2) AS 'baliBaseHourly', TRUNCATE(SUM(baliOvertime),2) AS 'baliOvertime', TRUNCATE(SUM(baliHolidayPay),2) AS 'baliHolidayPay', TRUNCATE(SUM(baliSickPay),2) AS 'baliSickPay', TRUNCATE(SUM(baliFlexiTimeEarned),2) AS 'baliFlexiTimeEarned', TRUNCATE(SUM(baliFlexiTimeTaken),2) AS 'baliFlexiTimeTaken', TRUNCATE(SUM(baliOvertime15x),2) AS 'baliOvertime15x' FROM timesheetbali WHERE " & qry & " GROUP BY lastName ORDER BY firstName ASC"
+            cmdmysql.CommandText = "SELECT firstName, lastName, TRUNCATE(COALESCE(SUM(actualHours),0),2) AS 'actualHours', TRUNCATE(SUM(toBePaidHours),2) AS 'toBePaidHours', TRUNCATE(SUM(baliBaseHourly),2) AS 'baliBaseHourly', TRUNCATE(SUM(baliOvertime),2) AS 'baliOvertime', TRUNCATE(SUM(baliHolidayPay),2) AS 'baliHolidayPay', TRUNCATE(SUM(baliSickPay),2) AS 'baliSickPay', TRUNCATE(SUM(baliFlexiTimeEarned),2) AS 'baliFlexiTimeEarned', TRUNCATE(SUM(baliFlexiTimeTaken),2) AS 'baliFlexiTimeTaken', TRUNCATE(SUM(baliOvertime15x),2) AS 'baliOvertime15x' FROM timesheetbali WHERE " & qry & " GROUP BY firstName,lastName ORDER BY firstName ASC"
             da.SelectCommand = cmdmysql
             da.Fill(dt)
             Return dt
@@ -503,6 +701,29 @@ Public Class classPayrollBali
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
             Return Nothing
+        Finally
+            dbConn.disconnectedMysql()
+        End Try
+    End Function
+
+    Public Function deletePayrollBaliTimeSheet(ByVal getIdTimesheet As String) As Boolean
+        Dim da As New MySqlDataAdapter(cmdmysql)
+        Try
+            Dim qry As String = String.Empty
+
+            qry = "id = '" & getIdTimesheet & "'"
+
+            dbConn.connectedMySQL()
+            cmdmysql.Parameters.Clear()
+            cmdmysql.CommandType = CommandType.Text
+            cmdmysql.CommandText = "DELETE FROM timesheetbali WHERE " & qry
+            cmdmysql.Connection = dbConn.cnnMysql
+            cmdmysql.ExecuteNonQuery()
+            Return True
+
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            Return False
         Finally
             dbConn.disconnectedMysql()
         End Try
