@@ -128,7 +128,7 @@ Public Class frmPayroll
             dgTimeSheet.Columns("dateTimeSheet").HeaderCell.Value = "Date"
             'dgTimeSheet.Columns("dateTimeSheet").ReadOnly = True
             dgTimeSheet.Columns("dateTimeSheet").Frozen = True
-            dgTimeSheet.Columns("dateTimeSheet").DefaultCellStyle.Format = "dd/MM/yyyy"
+            dgTimeSheet.Columns("dateTimeSheet").DefaultCellStyle.Format = "dddd, dd/MM/yyyy"
 
             dgTimeSheet.Columns("clockOn").HeaderCell.Value = "Clock On"
             'dgTimeSheet.Columns("clockOn").ReadOnly = True
