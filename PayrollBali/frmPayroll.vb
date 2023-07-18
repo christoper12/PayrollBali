@@ -128,7 +128,7 @@ Public Class frmPayroll
             dgTimeSheet.Columns("dateTimeSheet").HeaderCell.Value = "Date"
             'dgTimeSheet.Columns("dateTimeSheet").ReadOnly = True
             dgTimeSheet.Columns("dateTimeSheet").Frozen = True
-            dgTimeSheet.Columns("dateTimeSheet").DefaultCellStyle.Format = "dddd, dd/MM/yyyy"
+            'dgTimeSheet.Columns("dateTimeSheet").DefaultCellStyle.Format = "dddd, dd/MM/yyyy"
 
             dgTimeSheet.Columns("clockOn").HeaderCell.Value = "Clock On"
             'dgTimeSheet.Columns("clockOn").ReadOnly = True
@@ -448,7 +448,7 @@ Public Class frmPayroll
                                 Dim s1 As String = array(j, x)
 
                                 If s1 <> Nothing Then
-                                    If s1.ToString = "ID" Then
+                                    If s1.ToString = "ID" Or s1.ToString = "id" Then
                                         Exit For
                                     Else
                                         If array(j, 2).ToString = "" Then
