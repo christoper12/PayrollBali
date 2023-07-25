@@ -129,6 +129,8 @@ Public Class frmPayroll
             'dgTimeSheet.Columns("dateTimeSheet").ReadOnly = True
             dgTimeSheet.Columns("dateTimeSheet").Frozen = True
             'dgTimeSheet.Columns("dateTimeSheet").DefaultCellStyle.Format = "dddd, dd/MM/yyyy"
+            dgTimeSheet.Columns("dateTimeSheet").DefaultCellStyle.Format = "dd-MM-yyyy"
+            dgTimeSheet.Columns("dateTimeSheet").Width = 200
 
             dgTimeSheet.Columns("clockOn").HeaderCell.Value = "Clock On"
             'dgTimeSheet.Columns("clockOn").ReadOnly = True
@@ -183,6 +185,8 @@ Public Class frmPayroll
             dgTimeSheet.Columns("update_at").Visible = False
             dgTimeSheet.Columns("staff_update").Visible = False
             dgTimeSheet.Columns("cardId").Visible = False
+            dgTimeSheet.Columns("dateTimeSheetSort").Visible = False
+
             'dateTimePicker1.Visible = False
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
