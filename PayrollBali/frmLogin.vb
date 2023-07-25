@@ -1,5 +1,5 @@
 ﻿Public Class frmLogin
-    Private logger As New DllLogger.ClassLogger
+    Private logger As New ClassLoggerPayrollBali
 
     Private Sub btnLogin_Click(sender As Object, e As EventArgs) Handles btnLogin.Click
         Try
@@ -50,5 +50,9 @@
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
         End Try
+    End Sub
+
+    Private Sub frmLogin_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
     End Sub
 End Class

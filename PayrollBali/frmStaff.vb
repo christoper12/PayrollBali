@@ -1,5 +1,5 @@
 ﻿Public Class frmStaff
-    Private logger As New DllLogger.ClassLogger
+    Private logger As New ClassLoggerPayrollBali
 
     Sub firstLoad()
         Try

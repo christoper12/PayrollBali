@@ -4,7 +4,7 @@ Imports Mysqlx.XDevAPI.Relational
 Imports tesExcel = Microsoft.Office.Interop.Excel
 
 Public Class frmPayroll
-    Private logger As New DllLogger.ClassLogger
+    Private logger As New ClassLoggerPayrollBali
     Dim filename As String = String.Empty
     Dim copyOriginalFileTarget As String = String.Empty
     Dim originalFile As String = String.Empty
@@ -673,7 +673,7 @@ ExitAllFor:
                     If column.ColumnName.ToString() = "baliBaseHourly" Then
                         For i = 0 To dtTimeSheet.Rows.Count - 1
 
-                            Dim dateTimeSheet As DateTime = dtTimeSheet.Rows(i).Item("dateTimeSheet").ToString().Replace(",", ";") & ","c
+                            Dim dateTimeSheet As DateTime = dtTimeSheet.Rows(i).Item("dateTimeSheetSort").ToString().Replace(",", ";") & ","c
                             Dim format As String = "dd/MM/yyyy"
                             Dim baliBaseHourly As String = dtTimeSheet.Rows(i).Item("baliBaseHourly").ToString
                             Dim baliOvertime As String = dtTimeSheet.Rows(i).Item("baliOvertime").ToString
@@ -862,6 +862,9 @@ ExitAllFor:
                 'Dim folderPath As String = "C:\CSV\"
                 File.WriteAllText(newFullPath, csv)
                 MessageBox.Show("Export CSV Successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                lblproses.ForeColor = Color.ForestGreen
+                lblproses.Text = "Finish Export CSV . . . "
+                Me.Cursor = Cursors.Default
                 'Exporting to CSV File
             End If
 
@@ -869,10 +872,6 @@ ExitAllFor:
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
             lblproses.ForeColor = Color.Red
             lblproses.Text = "Failed Proccess . . . "
-            Me.Cursor = Cursors.Default
-        Finally
-            lblproses.ForeColor = Color.ForestGreen
-            lblproses.Text = "Finish Export CSV . . . "
             Me.Cursor = Cursors.Default
         End Try
     End Sub
