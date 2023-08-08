@@ -1,4 +1,5 @@
-﻿Imports System.Globalization
+﻿Imports System.ComponentModel
+Imports System.Globalization
 Imports System.IO
 Imports Mysqlx.XDevAPI.Relational
 Imports tesExcel = Microsoft.Office.Interop.Excel
@@ -1591,6 +1592,110 @@ ExitAllFor:
                     lblCountAutoSum.Text = ""
                 End If
             End If
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub btnOk_Click(sender As Object, e As EventArgs) Handles btnOk.Click
+        Try
+            Dim id As String = String.Empty
+            Dim func As New DllPayrollBali.classPayrollBali
+
+            Dim idImpor As String = String.Empty
+            Dim lastName As String = String.Empty
+            Dim firstName As String = String.Empty
+            Dim dateTimeSheet As DateTime = Nothing
+            Dim dateTimeSheetFixed As String = String.Empty
+            Dim clockOn As String = String.Empty
+            Dim clockOff As String = String.Empty
+            Dim breaks As String = String.Empty
+            Dim actualHours As String = String.Empty
+            Dim dateImportCreate As String = Now.ToString("yyyy-MM-dd HH:mm:ss")
+            Dim staffLogin As String = staffidPublic
+
+            If txtLastName.Text = "" Then
+                MsgBox("Last Name Must be Fill")
+                Exit Sub
+            Else
+                lastName = txtLastName.Text
+            End If
+
+            If txtFirstName.Text = "" Then
+                MsgBox("First Name Must be Fill")
+                Exit Sub
+            Else
+                firstName = txtFirstName.Text
+            End If
+
+            dateTimeSheet = dtpDateAdd.Value
+            dateTimeSheetFixed = dateTimeSheet.ToString("yyyy-MM-dd HH:mm:ss")
+
+            If txtClockOn.Text = "" Then
+                MsgBox("Clock On Must be Fill")
+                Exit Sub
+            Else
+                clockOn = txtClockOn.Text
+            End If
+
+            If txtClokOff.Text = "" Then
+                MsgBox("Clock Off Must be Fill")
+                Exit Sub
+            Else
+                clockOff = txtClokOff.Text
+            End If
+
+            If txtBreaks.Text = "" Then
+                MsgBox("Breaks Must be Fill")
+                Exit Sub
+            Else
+                breaks = txtBreaks.Text
+            End If
+
+            If txtActualHrs.Text = "" Then
+                MsgBox("Actual Hours Must be Fill")
+                Exit Sub
+            Else
+                actualHours = txtActualHrs.Text
+            End If
+
+            If lastName <> "" And firstName <> "" And dateTimeSheetFixed <> "" And clockOn <> "" And clockOff <> "" And breaks <> "" And actualHours <> "" Then
+                func.insertPayrollBaliTimeSheetManual(idImpor, lastName, firstName, dateTimeSheetFixed, clockOn, clockOff, breaks, actualHours, dateImportCreate, staffLogin)
+                getIdTimesheet = ""
+                loadDataDatagridTimeSheet()
+
+                txtLastName.Text = ""
+                txtFirstName.Text = ""
+                dtpDateAdd.Value = DateTime.Now
+                txtClockOn.Text = ""
+                txtClokOff.Text = ""
+                txtBreaks.Text = ""
+                txtActualHrs.Text = ""
+            End If
+
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
+        Try
+            txtLastName.Text = ""
+            txtFirstName.Text = ""
+            dtpDateAdd.Value = DateTime.Now
+            txtClockOn.Text = ""
+            txtClokOff.Text = ""
+            txtBreaks.Text = ""
+            txtActualHrs.Text = ""
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub frmPayroll_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+        Try
+            'Me.Close()
+            frmLogin.Close()
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
         End Try
