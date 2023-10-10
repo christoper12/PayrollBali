@@ -1,6 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports System.Globalization
 Imports System.IO
+Imports Microsoft.Office.Interop
 Imports Mysqlx.XDevAPI.Relational
 Imports tesExcel = Microsoft.Office.Interop.Excel
 
@@ -460,7 +461,7 @@ Public Class frmPayroll
                                             Exit For
                                         End If
 
-                                        If array(j, 4).ToString = "SICK LEAVE" Then
+                                        If array(j, 4).ToString.Trim() = "SICK LEAVE" Then
                                             idImport = array(j, 1)
                                             employeeName = array(j, 2)
                                             dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
@@ -469,7 +470,7 @@ Public Class frmPayroll
                                             clockOff = "SICK LEAVE"
                                             breaks = "SICK LEAVE"
                                             actualHours = "SICK LEAVE"
-                                        ElseIf array(j, 4).ToString = "SICK LEAVE - FORM ATTACHED" Then
+                                        ElseIf array(j, 4).ToString.Trim() = "SICK LEAVE - FORM ATTACHED" Then
                                             idImport = array(j, 1)
                                             employeeName = array(j, 2)
                                             dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
@@ -478,7 +479,7 @@ Public Class frmPayroll
                                             clockOff = "SICK LEAVE - FORM ATTACHED"
                                             breaks = "SICK LEAVE - FORM ATTACHED"
                                             actualHours = "SICK LEAVE - FORM ATTACHED"
-                                        ElseIf array(j, 4).ToString = "ANNUAL LEAVE" Then
+                                        ElseIf array(j, 4).ToString.Trim() = "ANNUAL LEAVE" Then
                                             idImport = array(j, 1)
                                             employeeName = array(j, 2)
                                             dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
@@ -487,7 +488,7 @@ Public Class frmPayroll
                                             clockOff = "ANNUAL LEAVE"
                                             breaks = "ANNUAL LEAVE"
                                             actualHours = "ANNUAL LEAVE"
-                                        ElseIf array(j, 4).ToString = "ANNUAL LEAVE - FORM ATTACHED" Then
+                                        ElseIf array(j, 4).ToString.Trim() = "ANNUAL LEAVE - FORM ATTACHED" Then
                                             idImport = array(j, 1)
                                             employeeName = array(j, 2)
                                             dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
@@ -496,7 +497,7 @@ Public Class frmPayroll
                                             clockOff = "ANNUAL LEAVE - FORM ATTACHED"
                                             breaks = "ANNUAL LEAVE - FORM ATTACHED"
                                             actualHours = "ANNUAL LEAVE - FORM ATTACHED"
-                                        ElseIf array(j, 4).ToString = "PUBHOL" Then
+                                        ElseIf array(j, 4).ToString.Trim() = "PUBHOL" Then
                                             idImport = array(j, 1)
                                             employeeName = array(j, 2)
                                             dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
@@ -505,6 +506,15 @@ Public Class frmPayroll
                                             clockOff = "PUBHOL"
                                             breaks = "PUBHOL"
                                             actualHours = "PUBHOL"
+                                        ElseIf array(j, 4).ToString.Trim() = "UNPAID PUBHOL" Then
+                                            idImport = array(j, 1)
+                                            employeeName = array(j, 2)
+                                            dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
+                                            datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
+                                            clockOn = "UNPAID PUBHOL"
+                                            clockOff = "UNPAID PUBHOL"
+                                            breaks = "UNPAID PUBHOL"
+                                            actualHours = "UNPAID PUBHOL"
                                         Else
                                             idImport = array(j, 1)
                                             employeeName = array(j, 2)
@@ -1692,12 +1702,91 @@ ExitAllFor:
         End Try
     End Sub
 
-    Private Sub frmPayroll_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+    Private Sub frmPayroll_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         Try
             'Me.Close()
             frmLogin.Close()
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+        End Try
+    End Sub
+
+    Private Sub btnExportToExcel_Click(sender As Object, e As EventArgs) Handles btnExportToExcel.Click
+        Try
+            Me.Cursor = Cursors.WaitCursor
+
+            'Check Datagrid Timesheet isi data atau tidak
+            If dgTimeSheet.Rows.Count < 0 Then
+                MessageBox.Show("Please search data TimsSheet Frist!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Exit Sub
+            End If
+            'Check Datagrid Timesheet isi data atau tidak
+
+            lblproses.Visible = True
+            lblproses.ForeColor = Color.Gold
+            lblproses.Text = "Proccessing Export File CSV"
+
+            Dim datechoosestartdate As String = Format(dtpStartDate.Value, "dd MM yyyy")
+            Dim datechooseenddate As String = Format(dtpEndDate.Value, "dd MM yyyy")
+            Dim filenameexport As String = "Export Timesheet To Excell " & datechoosestartdate & " - " & datechooseenddate
+
+            Dim saveDialogs As New SaveFileDialog()
+            saveDialogs.FileName = filenameexport
+            saveDialogs.Filter = "Excell files (.xlsx)|*.xlsx"
+            saveDialogs.FilterIndex = 2
+
+            'Adding the Rows
+            Dim xlapp As Excel.Application
+            Dim xlWorkBook As Excel.Workbook
+            Dim xlWorkSheet As Excel.Worksheet
+            Dim misValue As Object = System.Reflection.Missing.Value
+            Dim i As Integer
+            Dim j As Integer
+
+            xlapp = New Excel.Application
+            xlWorkBook = xlapp.Workbooks.Add(misValue)
+            xlWorkSheet = CType(xlWorkBook.Sheets("Sheet1"), Excel.Worksheet)
+
+            'For k = 0 To dgTimeSheet.ColumnCount - 1
+            '    xlWorkSheet.Cells(1, k + 1).HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter
+            '    xlWorkSheet.Cells(1, k + 1) = dgTimeSheet.Columns(k).Name
+            'Next
+            'For i = 0 To dgTimeSheet.RowCount - 1
+            '    For j = 0 To dgTimeSheet.ColumnCount - 1
+            '        xlWorkSheet.Cells(i + 2, j + 1).HorizontalAlignment = Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter
+            '        xlWorkSheet.Cells(i + 2, j + 1) =
+            '        dgTimeSheet(j, i).Value.ToString()
+            '    Next
+            'Next
+
+            For i = 0 To dgTimeSheet.RowCount - 2
+                For j = 0 To dgTimeSheet.ColumnCount - 1
+                    For k As Integer = 1 To dgTimeSheet.Columns.Count
+                        xlWorkSheet.Cells(1, k) = dgTimeSheet.Columns(k - 1).HeaderText
+                        xlWorkSheet.Cells(i + 2, j + 1) = dgTimeSheet(j, i).Value.ToString()
+                    Next
+                Next
+            Next
+
+            If saveDialogs.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+
+                'Exporting to Excell File
+                xlWorkSheet.SaveAs(saveDialogs.FileName)
+                xlWorkBook.Close()
+                xlapp.Quit()
+                'Exporting to Excell File
+
+                MessageBox.Show("Export Excell Successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                lblproses.ForeColor = Color.ForestGreen
+                lblproses.Text = "Finish Export CSV . . . "
+                Me.Cursor = Cursors.Default
+            End If
+
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            lblproses.ForeColor = Color.Red
+            lblproses.Text = "Failed Proccess . . . "
+            Me.Cursor = Cursors.Default
         End Try
     End Sub
 End Class

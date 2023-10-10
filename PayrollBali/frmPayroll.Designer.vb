@@ -33,6 +33,7 @@ Partial Class frmPayroll
         OpenFileDialog1 = New OpenFileDialog()
         lblFileExcelImport = New Label()
         GroupBox1 = New GroupBox()
+        btnExportToExcel = New Button()
         btnExit = New Button()
         btnProccess = New Button()
         lblproses = New Label()
@@ -85,7 +86,7 @@ Partial Class frmPayroll
         Label1.Name = "Label1"
         Label1.Size = New Size(76, 20)
         Label1.TabIndex = 0
-        Label1.Text = "Start Date" ' 
+        Label1.Text = "Start Date"' 
         ' dtpStartDate
         ' 
         dtpStartDate.Format = DateTimePickerFormat.Short
@@ -101,7 +102,7 @@ Partial Class frmPayroll
         Label2.Name = "Label2"
         Label2.Size = New Size(70, 20)
         Label2.TabIndex = 2
-        Label2.Text = "End Date" ' 
+        Label2.Text = "End Date"' 
         ' dtpEndDate
         ' 
         dtpEndDate.Format = DateTimePickerFormat.Short
@@ -150,7 +151,7 @@ Partial Class frmPayroll
         ' 
         ' OpenFileDialog1
         ' 
-        OpenFileDialog1.FileName = "OpenFileDialog1" ' 
+        OpenFileDialog1.FileName = "OpenFileDialog1"' 
         ' lblFileExcelImport
         ' 
         lblFileExcelImport.AutoSize = True
@@ -158,9 +159,10 @@ Partial Class frmPayroll
         lblFileExcelImport.Name = "lblFileExcelImport"
         lblFileExcelImport.Size = New Size(15, 20)
         lblFileExcelImport.TabIndex = 8
-        lblFileExcelImport.Text = "-" ' 
+        lblFileExcelImport.Text = "-"' 
         ' GroupBox1
         ' 
+        GroupBox1.Controls.Add(btnExportToExcel)
         GroupBox1.Controls.Add(btnExit)
         GroupBox1.Controls.Add(btnProccess)
         GroupBox1.Controls.Add(lblproses)
@@ -174,6 +176,15 @@ Partial Class frmPayroll
         GroupBox1.Size = New Size(1262, 125)
         GroupBox1.TabIndex = 9
         GroupBox1.TabStop = False
+        ' 
+        ' btnExportToExcel
+        ' 
+        btnExportToExcel.Location = New Point(749, 19)
+        btnExportToExcel.Name = "btnExportToExcel"
+        btnExportToExcel.Size = New Size(264, 28)
+        btnExportToExcel.TabIndex = 13
+        btnExportToExcel.Text = "Export Timesheet To Excel FIle"
+        btnExportToExcel.UseVisualStyleBackColor = True
         ' 
         ' btnExit
         ' 
@@ -201,7 +212,7 @@ Partial Class frmPayroll
         lblproses.Name = "lblproses"
         lblproses.Size = New Size(17, 23)
         lblproses.TabIndex = 10
-        lblproses.Text = "-" ' 
+        lblproses.Text = "-"' 
         ' btnClearFile
         ' 
         btnClearFile.Location = New Point(6, 19)
@@ -236,12 +247,12 @@ Partial Class frmPayroll
         ' Label3
         ' 
         Label3.AutoSize = True
-        Label3.Font = New Font("Segoe UI", 18.0F, FontStyle.Bold, GraphicsUnit.Point)
+        Label3.Font = New Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point)
         Label3.Location = New Point(13, 756)
         Label3.Name = "Label3"
         Label3.Size = New Size(152, 41)
         Label3.TabIndex = 12
-        Label3.Text = "Summary" ' 
+        Label3.Text = "Summary"' 
         ' btnRefreshSum
         ' 
         btnRefreshSum.Location = New Point(171, 765)
@@ -258,25 +269,25 @@ Partial Class frmPayroll
         lblCounttext.Name = "lblCounttext"
         lblCounttext.Size = New Size(55, 20)
         lblCounttext.TabIndex = 14
-        lblCounttext.Text = "Count :" ' 
+        lblCounttext.Text = "Count :"' 
         ' lblCount
         ' 
         lblCount.AutoSize = True
-        lblCount.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold, GraphicsUnit.Point)
+        lblCount.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
         lblCount.Location = New Point(272, 641)
         lblCount.Name = "lblCount"
         lblCount.Size = New Size(18, 20)
         lblCount.TabIndex = 15
-        lblCount.Text = "0" ' 
+        lblCount.Text = "0"' 
         ' lblCountSum
         ' 
         lblCountSum.AutoSize = True
-        lblCountSum.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold, GraphicsUnit.Point)
+        lblCountSum.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
         lblCountSum.Location = New Point(74, 1089)
         lblCountSum.Name = "lblCountSum"
         lblCountSum.Size = New Size(18, 20)
         lblCountSum.TabIndex = 17
-        lblCountSum.Text = "0" ' 
+        lblCountSum.Text = "0"' 
         ' Label5
         ' 
         Label5.AutoSize = True
@@ -284,7 +295,7 @@ Partial Class frmPayroll
         Label5.Name = "Label5"
         Label5.Size = New Size(55, 20)
         Label5.TabIndex = 16
-        Label5.Text = "Count :" ' 
+        Label5.Text = "Count :"' 
         ' btnClearSerach
         ' 
         btnClearSerach.Location = New Point(1074, 24)
@@ -317,7 +328,7 @@ Partial Class frmPayroll
         Label4.Name = "Label4"
         Label4.Size = New Size(119, 20)
         Label4.TabIndex = 20
-        Label4.Text = "Employee Name" ' 
+        Label4.Text = "Employee Name"' 
         ' Label6
         ' 
         Label6.AutoSize = True
@@ -325,16 +336,16 @@ Partial Class frmPayroll
         Label6.Name = "Label6"
         Label6.Size = New Size(81, 20)
         Label6.TabIndex = 21
-        Label6.Text = "Auto Sum :" ' 
+        Label6.Text = "Auto Sum :"' 
         ' lblCountAutoSum
         ' 
         lblCountAutoSum.AutoSize = True
-        lblCountAutoSum.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold, GraphicsUnit.Point)
+        lblCountAutoSum.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point)
         lblCountAutoSum.Location = New Point(543, 640)
         lblCountAutoSum.Name = "lblCountAutoSum"
         lblCountAutoSum.Size = New Size(18, 20)
         lblCountAutoSum.TabIndex = 22
-        lblCountAutoSum.Text = "0" ' 
+        lblCountAutoSum.Text = "0"' 
         ' GroupBox2
         ' 
         GroupBox2.Controls.Add(Label1)
@@ -350,7 +361,7 @@ Partial Class frmPayroll
         GroupBox2.Size = New Size(1262, 66)
         GroupBox2.TabIndex = 23
         GroupBox2.TabStop = False
-        GroupBox2.Text = "Search" ' 
+        GroupBox2.Text = "Search"' 
         ' GroupBox3
         ' 
         GroupBox3.Controls.Add(btnCancel)
@@ -374,7 +385,7 @@ Partial Class frmPayroll
         GroupBox3.Size = New Size(1399, 83)
         GroupBox3.TabIndex = 24
         GroupBox3.TabStop = False
-        GroupBox3.Text = "Add Data Payroll" ' 
+        GroupBox3.Text = "Add Data Payroll"' 
         ' btnCancel
         ' 
         btnCancel.Location = New Point(1299, 41)
@@ -407,7 +418,7 @@ Partial Class frmPayroll
         Label13.Name = "Label13"
         Label13.Size = New Size(94, 20)
         Label13.TabIndex = 12
-        Label13.Text = "Actual Hours" ' 
+        Label13.Text = "Actual Hours"' 
         ' txtBreaks
         ' 
         txtBreaks.Location = New Point(857, 43)
@@ -422,7 +433,7 @@ Partial Class frmPayroll
         Label12.Name = "Label12"
         Label12.Size = New Size(52, 20)
         Label12.TabIndex = 10
-        Label12.Text = "Breaks" ' 
+        Label12.Text = "Breaks"' 
         ' txtClokOff
         ' 
         txtClokOff.Location = New Point(682, 43)
@@ -437,7 +448,7 @@ Partial Class frmPayroll
         Label11.Name = "Label11"
         Label11.Size = New Size(70, 20)
         Label11.TabIndex = 8
-        Label11.Text = "Clock Off" ' 
+        Label11.Text = "Clock Off"' 
         ' txtClockOn
         ' 
         txtClockOn.Location = New Point(504, 43)
@@ -452,7 +463,7 @@ Partial Class frmPayroll
         Label10.Name = "Label10"
         Label10.Size = New Size(68, 20)
         Label10.TabIndex = 6
-        Label10.Text = "Clock On" ' 
+        Label10.Text = "Clock On"' 
         ' Label9
         ' 
         Label9.AutoSize = True
@@ -460,7 +471,7 @@ Partial Class frmPayroll
         Label9.Name = "Label9"
         Label9.Size = New Size(41, 20)
         Label9.TabIndex = 5
-        Label9.Text = "Date" ' 
+        Label9.Text = "Date"' 
         ' dtpDateAdd
         ' 
         dtpDateAdd.Format = DateTimePickerFormat.Short
@@ -483,7 +494,7 @@ Partial Class frmPayroll
         Label8.Name = "Label8"
         Label8.Size = New Size(80, 20)
         Label8.TabIndex = 2
-        Label8.Text = "First Name" ' 
+        Label8.Text = "First Name"' 
         ' txtLastName
         ' 
         txtLastName.Location = New Point(12, 45)
@@ -498,16 +509,16 @@ Partial Class frmPayroll
         Label7.Name = "Label7"
         Label7.Size = New Size(79, 20)
         Label7.TabIndex = 0
-        Label7.Text = "Last Name" ' 
+        Label7.Text = "Last Name"' 
         ' Panel1
         ' 
         Panel1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         Panel1.AutoScroll = True
+        Panel1.Controls.Add(dgTimeSheet)
         Panel1.Controls.Add(GroupBox2)
         Panel1.Controls.Add(lblCountSum)
         Panel1.Controls.Add(GroupBox3)
         Panel1.Controls.Add(Label5)
-        Panel1.Controls.Add(dgTimeSheet)
         Panel1.Controls.Add(lblCountAutoSum)
         Panel1.Controls.Add(btnRefreshSum)
         Panel1.Controls.Add(btnDeleteRowTimesheet)
@@ -524,7 +535,7 @@ Partial Class frmPayroll
         ' frmPayroll
         ' 
         AcceptButton = btnSearch
-        AutoScaleDimensions = New SizeF(8.0F, 20.0F)
+        AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1779, 910)
         Controls.Add(Panel1)
@@ -594,4 +605,5 @@ Partial Class frmPayroll
     Friend WithEvents txtFirstName As TextBox
     Friend WithEvents Label8 As Label
     Friend WithEvents Panel1 As Panel
+    Friend WithEvents btnExportToExcel As Button
 End Class
