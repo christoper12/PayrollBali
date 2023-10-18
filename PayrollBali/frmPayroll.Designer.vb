@@ -71,6 +71,7 @@ Partial Class frmPayroll
         txtLastName = New TextBox()
         Label7 = New Label()
         Panel1 = New Panel()
+        btnCopydgSummary = New Button()
         CType(dgTimeSheet, ComponentModel.ISupportInitialize).BeginInit()
         GroupBox1.SuspendLayout()
         CType(dgSummary, ComponentModel.ISupportInitialize).BeginInit()
@@ -514,6 +515,7 @@ Partial Class frmPayroll
         ' 
         Panel1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         Panel1.AutoScroll = True
+        Panel1.Controls.Add(btnCopydgSummary)
         Panel1.Controls.Add(dgTimeSheet)
         Panel1.Controls.Add(GroupBox2)
         Panel1.Controls.Add(lblCountSum)
@@ -531,6 +533,15 @@ Partial Class frmPayroll
         Panel1.Name = "Panel1"
         Panel1.Size = New Size(1755, 768)
         Panel1.TabIndex = 25
+        ' 
+        ' btnCopydgSummary
+        ' 
+        btnCopydgSummary.Location = New Point(320, 765)
+        btnCopydgSummary.Name = "btnCopydgSummary"
+        btnCopydgSummary.Size = New Size(175, 29)
+        btnCopydgSummary.TabIndex = 25
+        btnCopydgSummary.Text = "Copy Data"
+        btnCopydgSummary.UseVisualStyleBackColor = True
         ' 
         ' frmPayroll
         ' 
@@ -606,4 +617,5 @@ Partial Class frmPayroll
     Friend WithEvents Label8 As Label
     Friend WithEvents Panel1 As Panel
     Friend WithEvents btnExportToExcel As Button
+    Friend WithEvents btnCopydgSummary As Button
 End Class

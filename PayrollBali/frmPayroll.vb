@@ -1789,4 +1789,37 @@ ExitAllFor:
             Me.Cursor = Cursors.Default
         End Try
     End Sub
+
+    Private Sub btnCopydgSummary_Click(sender As Object, e As EventArgs) Handles btnCopydgSummary.Click
+        CopyDataGridViewToClipboard(dgSummary)
+    End Sub
+
+    Private Sub CopyDataGridViewToClipboard(ByRef dgv As DataGridView)
+        Dim s As String = ""
+        Dim oCurrentCol As DataGridViewColumn    'Get header
+        oCurrentCol = dgv.Columns.GetFirstColumn(DataGridViewElementStates.Visible)
+        Do
+            s &= oCurrentCol.HeaderText & Chr(Keys.Tab)
+            oCurrentCol = dgv.Columns.GetNextColumn(oCurrentCol,
+               DataGridViewElementStates.Visible, DataGridViewElementStates.None)
+        Loop Until oCurrentCol Is Nothing
+        s = s.Substring(0, s.Length - 1)
+        s &= Environment.NewLine    'Get rows
+        For Each row As DataGridViewRow In dgv.Rows
+            oCurrentCol = dgv.Columns.GetFirstColumn(DataGridViewElementStates.Visible)
+            Do
+                If row.Cells(oCurrentCol.Index).Value IsNot Nothing Then
+                    s &= row.Cells(oCurrentCol.Index).Value.ToString
+                End If
+                s &= Chr(Keys.Tab)
+                oCurrentCol = dgv.Columns.GetNextColumn(oCurrentCol,
+                      DataGridViewElementStates.Visible, DataGridViewElementStates.None)
+            Loop Until oCurrentCol Is Nothing
+            s = s.Substring(0, s.Length - 1)
+            s &= Environment.NewLine
+        Next    'Put to clipboard
+        Dim o As New DataObject
+        o.SetText(s)
+        Clipboard.SetDataObject(o, True)
+    End Sub
 End Class
