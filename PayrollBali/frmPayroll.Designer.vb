@@ -72,6 +72,7 @@ Partial Class frmPayroll
         Label7 = New Label()
         Panel1 = New Panel()
         btnCopydgSummary = New Button()
+        cbUpdateExisting = New CheckBox()
         CType(dgTimeSheet, ComponentModel.ISupportInitialize).BeginInit()
         GroupBox1.SuspendLayout()
         CType(dgSummary, ComponentModel.ISupportInitialize).BeginInit()
@@ -123,7 +124,7 @@ Partial Class frmPayroll
         ' 
         ' btnExport
         ' 
-        btnExport.Location = New Point(479, 18)
+        btnExport.Location = New Point(835, 18)
         btnExport.Name = "btnExport"
         btnExport.Size = New Size(264, 28)
         btnExport.TabIndex = 5
@@ -163,6 +164,7 @@ Partial Class frmPayroll
         lblFileExcelImport.Text = "-"' 
         ' GroupBox1
         ' 
+        GroupBox1.Controls.Add(cbUpdateExisting)
         GroupBox1.Controls.Add(btnExportToExcel)
         GroupBox1.Controls.Add(btnExit)
         GroupBox1.Controls.Add(btnProccess)
@@ -180,7 +182,7 @@ Partial Class frmPayroll
         ' 
         ' btnExportToExcel
         ' 
-        btnExportToExcel.Location = New Point(749, 19)
+        btnExportToExcel.Location = New Point(835, 55)
         btnExportToExcel.Name = "btnExportToExcel"
         btnExportToExcel.Size = New Size(264, 28)
         btnExportToExcel.TabIndex = 13
@@ -543,6 +545,16 @@ Partial Class frmPayroll
         btnCopydgSummary.Text = "Copy Data"
         btnCopydgSummary.UseVisualStyleBackColor = True
         ' 
+        ' cbUpdateExisting
+        ' 
+        cbUpdateExisting.AutoSize = True
+        cbUpdateExisting.Location = New Point(461, 21)
+        cbUpdateExisting.Name = "cbUpdateExisting"
+        cbUpdateExisting.Size = New Size(171, 24)
+        cbUpdateExisting.TabIndex = 14
+        cbUpdateExisting.Text = "Update Existing Data"
+        cbUpdateExisting.UseVisualStyleBackColor = True
+        ' 
         ' frmPayroll
         ' 
         AcceptButton = btnSearch
@@ -618,4 +630,5 @@ Partial Class frmPayroll
     Friend WithEvents Panel1 As Panel
     Friend WithEvents btnExportToExcel As Button
     Friend WithEvents btnCopydgSummary As Button
+    Friend WithEvents cbUpdateExisting As CheckBox
 End Class

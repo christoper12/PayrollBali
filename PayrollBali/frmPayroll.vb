@@ -43,6 +43,8 @@ Public Class frmPayroll
             copyOriginalFileTarget = ""
             originalFile = ""
             btnDeleteRowTimesheet.Enabled = False
+
+            cbUpdateExisting.Checked = True
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
         End Try
@@ -461,69 +463,80 @@ Public Class frmPayroll
                                             Exit For
                                         End If
 
-                                        If array(j, 4).ToString.Trim() = "SICK LEAVE" Then
+                                        If array(j, 4) Is Nothing Then
                                             idImport = array(j, 1)
                                             employeeName = array(j, 2)
                                             dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
                                             datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
-                                            clockOn = "SICK LEAVE"
-                                            clockOff = "SICK LEAVE"
-                                            breaks = "SICK LEAVE"
-                                            actualHours = "SICK LEAVE"
-                                        ElseIf array(j, 4).ToString.Trim() = "SICK LEAVE - FORM ATTACHED" Then
-                                            idImport = array(j, 1)
-                                            employeeName = array(j, 2)
-                                            dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
-                                            datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
-                                            clockOn = "SICK LEAVE - FORM ATTACHED"
-                                            clockOff = "SICK LEAVE - FORM ATTACHED"
-                                            breaks = "SICK LEAVE - FORM ATTACHED"
-                                            actualHours = "SICK LEAVE - FORM ATTACHED"
-                                        ElseIf array(j, 4).ToString.Trim() = "ANNUAL LEAVE" Then
-                                            idImport = array(j, 1)
-                                            employeeName = array(j, 2)
-                                            dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
-                                            datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
-                                            clockOn = "ANNUAL LEAVE"
-                                            clockOff = "ANNUAL LEAVE"
-                                            breaks = "ANNUAL LEAVE"
-                                            actualHours = "ANNUAL LEAVE"
-                                        ElseIf array(j, 4).ToString.Trim() = "ANNUAL LEAVE - FORM ATTACHED" Then
-                                            idImport = array(j, 1)
-                                            employeeName = array(j, 2)
-                                            dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
-                                            datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
-                                            clockOn = "ANNUAL LEAVE - FORM ATTACHED"
-                                            clockOff = "ANNUAL LEAVE - FORM ATTACHED"
-                                            breaks = "ANNUAL LEAVE - FORM ATTACHED"
-                                            actualHours = "ANNUAL LEAVE - FORM ATTACHED"
-                                        ElseIf array(j, 4).ToString.Trim() = "PUBHOL" Then
-                                            idImport = array(j, 1)
-                                            employeeName = array(j, 2)
-                                            dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
-                                            datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
-                                            clockOn = "PUBHOL"
-                                            clockOff = "PUBHOL"
-                                            breaks = "PUBHOL"
-                                            actualHours = "PUBHOL"
-                                        ElseIf array(j, 4).ToString.Trim() = "UNPAID PUBHOL" Then
-                                            idImport = array(j, 1)
-                                            employeeName = array(j, 2)
-                                            dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
-                                            datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
-                                            clockOn = "UNPAID PUBHOL"
-                                            clockOff = "UNPAID PUBHOL"
-                                            breaks = "UNPAID PUBHOL"
-                                            actualHours = "UNPAID PUBHOL"
+                                            clockOn = ""
+                                            clockOff = ""
+                                            breaks = ""
+                                            actualHours = ""
                                         Else
-                                            idImport = array(j, 1)
-                                            employeeName = array(j, 2)
-                                            dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
-                                            datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
-                                            clockOn = (New DateTime()).AddDays(array(j, 4))
-                                            clockOff = (New DateTime()).AddDays(array(j, 5))
-                                            breaks = array(j, 8)
-                                            actualHours = array(j, 9)
+                                            If array(j, 4).ToString.Trim() = "SICK LEAVE" Then
+                                                idImport = array(j, 1)
+                                                employeeName = array(j, 2)
+                                                dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
+                                                datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
+                                                clockOn = "SICK LEAVE"
+                                                clockOff = "SICK LEAVE"
+                                                breaks = "SICK LEAVE"
+                                                actualHours = "SICK LEAVE"
+                                            ElseIf array(j, 4).ToString.Trim() = "SICK LEAVE - FORM ATTACHED" Then
+                                                idImport = array(j, 1)
+                                                employeeName = array(j, 2)
+                                                dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
+                                                datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
+                                                clockOn = "SICK LEAVE - FORM ATTACHED"
+                                                clockOff = "SICK LEAVE - FORM ATTACHED"
+                                                breaks = "SICK LEAVE - FORM ATTACHED"
+                                                actualHours = "SICK LEAVE - FORM ATTACHED"
+                                            ElseIf array(j, 4).ToString.Trim() = "ANNUAL LEAVE" Then
+                                                idImport = array(j, 1)
+                                                employeeName = array(j, 2)
+                                                dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
+                                                datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
+                                                clockOn = "ANNUAL LEAVE"
+                                                clockOff = "ANNUAL LEAVE"
+                                                breaks = "ANNUAL LEAVE"
+                                                actualHours = "ANNUAL LEAVE"
+                                            ElseIf array(j, 4).ToString.Trim() = "ANNUAL LEAVE - FORM ATTACHED" Then
+                                                idImport = array(j, 1)
+                                                employeeName = array(j, 2)
+                                                dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
+                                                datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
+                                                clockOn = "ANNUAL LEAVE - FORM ATTACHED"
+                                                clockOff = "ANNUAL LEAVE - FORM ATTACHED"
+                                                breaks = "ANNUAL LEAVE - FORM ATTACHED"
+                                                actualHours = "ANNUAL LEAVE - FORM ATTACHED"
+                                            ElseIf array(j, 4).ToString.Trim() = "PUBHOL" Then
+                                                idImport = array(j, 1)
+                                                employeeName = array(j, 2)
+                                                dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
+                                                datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
+                                                clockOn = "PUBHOL"
+                                                clockOff = "PUBHOL"
+                                                breaks = "PUBHOL"
+                                                actualHours = "PUBHOL"
+                                            ElseIf array(j, 4).ToString.Trim() = "UNPAID PUBHOL" Then
+                                                idImport = array(j, 1)
+                                                employeeName = array(j, 2)
+                                                dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
+                                                datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
+                                                clockOn = "UNPAID PUBHOL"
+                                                clockOff = "UNPAID PUBHOL"
+                                                breaks = "UNPAID PUBHOL"
+                                                actualHours = "UNPAID PUBHOL"
+                                            Else
+                                                idImport = array(j, 1)
+                                                employeeName = array(j, 2)
+                                                dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
+                                                datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
+                                                clockOn = (New DateTime()).AddDays(array(j, 4))
+                                                clockOff = (New DateTime()).AddDays(array(j, 5))
+                                                breaks = array(j, 8)
+                                                actualHours = array(j, 9)
+                                            End If
                                         End If
                                     End If
 
@@ -546,13 +559,15 @@ Public Class frmPayroll
                                         dt = func.getDataStaffPayrollBaliChekingName(employeeName)
 
                                         If dt.Rows.Count > 0 Then
-                                            firtsName = dt.Rows(0).Item("firstName").ToString()
-                                            lastName = dt.Rows(0).Item("lastName").ToString()
-                                            staffLogin = staffidPublic
+                                            If cbUpdateExisting.Checked = True Then
+                                                firtsName = dt.Rows(0).Item("firstName").ToString()
+                                                lastName = dt.Rows(0).Item("lastName").ToString()
+                                                staffLogin = staffidPublic
 
-                                            Dim employeeNameCheck As String = firtsName & " " & lastName
+                                                Dim employeeNameCheck As String = firtsName & " " & lastName
 
-                                            func.updatePayrollBaliTimeSheet(idImport, employeeNameCheck, datesFixed, clockOn, clockOff, breaks, actualHours, dateImportCreate, staffLogin)
+                                                func.updatePayrollBaliTimeSheet(idImport, employeeNameCheck, datesFixed, clockOn, clockOff, breaks, actualHours, dateImportCreate, staffLogin)
+                                            End If
                                         End If
                                     Else
                                         dt = func.getDataStaffPayrollBaliChekingName(employeeName)
@@ -1724,7 +1739,7 @@ ExitAllFor:
 
             lblproses.Visible = True
             lblproses.ForeColor = Color.Gold
-            lblproses.Text = "Proccessing Export File CSV"
+            lblproses.Text = "Proccessing Export File Excel"
 
             Dim datechoosestartdate As String = Format(dtpStartDate.Value, "dd MM yyyy")
             Dim datechooseenddate As String = Format(dtpEndDate.Value, "dd MM yyyy")
@@ -1778,7 +1793,7 @@ ExitAllFor:
 
                 MessageBox.Show("Export Excell Successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 lblproses.ForeColor = Color.ForestGreen
-                lblproses.Text = "Finish Export CSV . . . "
+                lblproses.Text = "Finish Export Excell . . . "
                 Me.Cursor = Cursors.Default
             End If
 
