@@ -12,7 +12,7 @@
 
             Dim staffid As String = txtUsername.Text
             Dim pass As String = txtPassword.Text
-            Dim func As New DllPayrollBali.classLoginPayrollBali
+            Dim func As New DllPayrollBaliNew.classLoginPayrollBali
             Dim dt As DataTable
 
             dt = func.getDataStaffLogin(staffid, pass)

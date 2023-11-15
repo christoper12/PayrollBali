@@ -3,7 +3,7 @@
 
     Sub firstLoad()
         Try
-            Dim func As New DllPayrollBali.classPayrollBali
+            Dim func As New DllPayrollBaliNew.classPayrollBali
             Dim dt As DataTable
             dt = func.getDataStaffPayrollBali()
             dgStaff.DataSource = dt
@@ -162,7 +162,7 @@
                     clearData()
                     Exit Sub
                 ElseIf result = DialogResult.Yes Then
-                    Dim func As New DllPayrollBali.classPayrollBali
+                    Dim func As New DllPayrollBaliNew.classPayrollBali
                     If func.deletePayrollBaliStaff(idStaff) = True Then
                         clearData()
                         firstLoad()
@@ -306,7 +306,7 @@
                 Exit Sub
             End If
 
-            Dim func As New DllPayrollBali.classPayrollBali
+            Dim func As New DllPayrollBaliNew.classPayrollBali
             If func.insertPayrollBaliStaff(fullNameAdd, firstNameAdd, lastNameAdd, cardIdAdd, empRecordIdAdd) = True Then
                 clearData()
                 firstLoad()
@@ -380,7 +380,7 @@
                 Exit Sub
             End If
 
-            Dim func As New DllPayrollBali.classPayrollBali
+            Dim func As New DllPayrollBaliNew.classPayrollBali
             If func.updatePayrollBaliStaff(fullNameAdd, firstNameAdd, lastNameAdd, cardIdAdd, empRecordIdAdd, idStaff) = True Then
                 clearData()
                 firstLoad()

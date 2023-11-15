@@ -51,8 +51,8 @@
     <Reference Include="DllLogger">
       <HintPath>G:\Industrial_Trackit Index Testing\TrackitDll\DllLogger.dll</HintPath>
     </Reference>
-    <Reference Include="DllPayrollBali">
-      <HintPath>..\Dll\DllPayrollBali\bin\Debug\net6.0\DllPayrollBali.dll</HintPath>
+    <Reference Include="DllPayrollBaliNew">
+      <HintPath>G:\Industrial_Trackit Index Testing\TrackitDll\DllPayrollBaliNew.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data">
       <HintPath>G:\Industrial_Trackit Index Testing\TrackitDll\MySql.Data.dll</HintPath>

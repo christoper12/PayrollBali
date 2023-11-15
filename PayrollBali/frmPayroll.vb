@@ -52,7 +52,7 @@ Public Class frmPayroll
 
     Sub loadDataDatagridTimeSheet()
         Try
-            Dim func As New DllPayrollBali.classPayrollBali
+            Dim func As New DllPayrollBaliNew.classPayrollBali
 
             '----- Untuk Ambil Data Time Sheet Dari Tabel timesheetbali -----
             If dt Is Nothing Then
@@ -81,7 +81,7 @@ Public Class frmPayroll
 
     Sub loadDataDatagridSummary()
         Try
-            Dim func As New DllPayrollBali.classPayrollBali
+            Dim func As New DllPayrollBaliNew.classPayrollBali
 
             '----- Untuk Ambil Data Summary Dari Tabel timesheetbali dan di jumlahkan sesuai dengan tanggal yang di cari -----
             If dt2 Is Nothing Then
@@ -355,7 +355,7 @@ Public Class frmPayroll
                 lblproses.ForeColor = Color.ForestGreen
                 lblproses.Text = "Finish Proccess . . . "
 
-                Dim func As New DllPayrollBali.classPayrollBali
+                Dim func As New DllPayrollBaliNew.classPayrollBali
 
                 'Get Data dari Database fungsi getDataTimeSheetPayrollBali
                 If dt Is Nothing Then
@@ -552,7 +552,7 @@ Public Class frmPayroll
                                         endDateFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
                                     End If
 
-                                    Dim func As New DllPayrollBali.classPayrollBali
+                                    Dim func As New DllPayrollBaliNew.classPayrollBali
 
                                     dt2 = func.getDataPayrollBaliTimeSheetForUpdate(idImport, employeeName, datesFixed)
                                     If dt2.Rows.Count > 0 Then
@@ -689,7 +689,7 @@ ExitAllFor:
                 'Reset Datatable kalau isi refresh ulang
 
                 'Get Data dari database fungsi getDataTimeSheetPayrollBali
-                Dim func As New DllPayrollBali.classPayrollBali
+                Dim func As New DllPayrollBaliNew.classPayrollBali
                 dtTimeSheet = func.getDataTimeSheetPayrollBali(startDateFixed, endDateFixed, empName)
                 'Get Data dari database fungsi getDataTimeSheetPayrollBali
 
@@ -918,7 +918,7 @@ ExitAllFor:
                 empName = ""
             End If
 
-            Dim func As New DllPayrollBali.classPayrollBali
+            Dim func As New DllPayrollBaliNew.classPayrollBali
 
             '----- Untuk Ambil Data Time Sheet Dari Tabel timesheetbali -----
             If dt Is Nothing Then
@@ -959,7 +959,7 @@ ExitAllFor:
             startDateFixed = startDate.ToString("yyyy-MM-dd HH:mm:ss")
             endDateFixed = endDate.ToString("yyyy-MM-dd HH:mm:ss")
 
-            Dim func As New DllPayrollBali.classPayrollBali
+            Dim func As New DllPayrollBaliNew.classPayrollBali
 
             '----- Untuk Ambil Data Summary Dari Tabel timesheetbali dan di jumlahkan sesuai dengan tanggal yang di cari -----
             If dt2 Is Nothing Then
@@ -1018,7 +1018,7 @@ ExitAllFor:
             Dim baliOvertime15xDec As Decimal = Nothing
 
             Dim id As String = String.Empty
-            Dim func As New DllPayrollBali.classPayrollBali
+            Dim func As New DllPayrollBaliNew.classPayrollBali
 
             Dim idImpor As String = String.Empty
             Dim lastName As String = String.Empty
@@ -1332,7 +1332,7 @@ ExitAllFor:
 
     Private Sub dgTimeSheet_CellLeave(sender As Object, e As DataGridViewCellEventArgs) Handles dgTimeSheet.CellLeave
         'Try
-        '    Dim func As New DllPayrollBali.classPayrollBali
+        '    Dim func As New DllPayrollBaliNew.classPayrollBali
 
         '    Dim idImpor As String = String.Empty
         '    Dim lastName As String = String.Empty
@@ -1443,7 +1443,7 @@ ExitAllFor:
         '    Dim baliOvertime15xDec As Decimal = Nothing
 
         '    Dim id As String = String.Empty
-        '    Dim func As New DllPayrollBali.classPayrollBali
+        '    Dim func As New DllPayrollBaliNew.classPayrollBali
 
 
         '    id = dgTimeSheet.Rows(e.RowIndex).Cells("id").Value
@@ -1554,7 +1554,7 @@ ExitAllFor:
                     btnDeleteRowTimesheet.Enabled = False
                     getIdTimesheet = ""
                 ElseIf result = DialogResult.Yes Then
-                    Dim func As New DllPayrollBali.classPayrollBali
+                    Dim func As New DllPayrollBaliNew.classPayrollBali
 
                     ' Split string based on comma
                     Dim getIdTimesheetSplit As String() = getIdTimesheet.Split(New Char() {","c})
@@ -1625,7 +1625,7 @@ ExitAllFor:
     Private Sub btnOk_Click(sender As Object, e As EventArgs) Handles btnOk.Click
         Try
             Dim id As String = String.Empty
-            Dim func As New DllPayrollBali.classPayrollBali
+            Dim func As New DllPayrollBaliNew.classPayrollBali
 
             Dim idImpor As String = String.Empty
             Dim lastName As String = String.Empty

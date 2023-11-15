@@ -34,6 +34,19 @@ Public Class classLoginPayrollBali
             Dim password As String = ""
             Dim port As String = "3306"
 
+            If (System.IO.File.Exists(Application.StartupPath & "\SQLSetting.ini")) Then
+                Dim read2 As String
+                read2 = My.Computer.FileSystem.ReadAllText(Application.StartupPath & "\SQLSetting.ini")
+                If read2 <> "" Then
+                    Dim splitRead2 As String() = read2.Split(",")
+                    server = splitRead2(0)
+                    userName = splitRead2(1)
+                    password = splitRead2(2)
+                    DatabaseName = splitRead2(3)
+                    port = splitRead2(4)
+                End If
+            End If
+
             'If Not cnnMysql Is Nothing Then cnnMysql.Dispose()
 
             If Not (cnnMysql.State = ConnectionState.Open) Then
