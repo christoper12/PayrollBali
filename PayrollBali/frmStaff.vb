@@ -233,8 +233,10 @@
 
             If status = "add" Then
                 addStaff()
+                clear()
             ElseIf status = "update" Then
                 updateStaff()
+                clear()
             End If
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
@@ -412,6 +414,17 @@
         Try
             Me.Cursor = Cursors.WaitCursor
 
+            clear()
+        Catch ex As Exception
+            logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
+            Me.Cursor = Cursors.Default
+        Finally
+            Me.Cursor = Cursors.Default
+        End Try
+    End Sub
+
+    Sub clear()
+        Try
             status = String.Empty
             clearData()
             btnCancel.Enabled = False
@@ -423,8 +436,6 @@
             lblStatus.Text = ""
         Catch ex As Exception
             logger.writeLog(Me.GetType().Name, ex.Message & vbCrLf & ex.StackTrace)
-            Me.Cursor = Cursors.Default
-        Finally
             Me.Cursor = Cursors.Default
         End Try
     End Sub
