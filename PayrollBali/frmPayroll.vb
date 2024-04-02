@@ -527,6 +527,15 @@ Public Class frmPayroll
                                                 clockOff = "UNPAID PUBHOL"
                                                 breaks = "UNPAID PUBHOL"
                                                 actualHours = "UNPAID PUBHOL"
+                                            ElseIf array(j, 4).ToString.Trim() = "UNPAID" Then
+                                                idImport = array(j, 1)
+                                                employeeName = array(j, 2)
+                                                dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
+                                                datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
+                                                clockOn = "UNPAID"
+                                                clockOff = "UNPAID"
+                                                breaks = "UNPAID"
+                                                actualHours = "UNPAID"
                                             Else
                                                 idImport = array(j, 1)
                                                 employeeName = array(j, 2)
