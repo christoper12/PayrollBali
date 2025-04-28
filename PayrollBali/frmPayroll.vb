@@ -536,6 +536,15 @@ Public Class frmPayroll
                                                 clockOff = "UNPAID"
                                                 breaks = "UNPAID"
                                                 actualHours = "UNPAID"
+                                            ElseIf array(j, 4).ToString.Trim() = "MATERNITY LEAVE" Then
+                                                idImport = array(j, 1)
+                                                employeeName = array(j, 2)
+                                                dates = DateTime.ParseExact(array(j, 3), "d", CultureInfo.CurrentCulture)
+                                                datesFixed = dates.ToString("yyyy-MM-dd HH:mm:ss")
+                                                clockOn = "MATERNITY LEAVE"
+                                                clockOff = "MATERNITY LEAVE"
+                                                breaks = "MATERNITY LEAVE"
+                                                actualHours = "MATERNITY LEAVE"
                                             Else
                                                 idImport = array(j, 1)
                                                 employeeName = array(j, 2)
